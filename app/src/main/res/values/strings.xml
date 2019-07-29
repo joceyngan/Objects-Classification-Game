@@ -27,4 +27,7 @@
         <item>GPU</item>
         <item>NNAPI</item>
     </string-array>
+
+    <string name="student">Student</string>
+    <string name="tutor">Tutor</string>
 </resources>

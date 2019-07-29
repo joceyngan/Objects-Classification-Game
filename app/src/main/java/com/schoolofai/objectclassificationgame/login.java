@@ -8,28 +8,32 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class login extends AppCompatActivity implements View.OnClickListener {
-    private Button buttonStudent, buttonTutor;
+    private Button btnStudent, btnTutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        btnStudent = findViewById(R.id.btnStudent);
+        btnTutor = findViewById(R.id.btnTutor);
+
         initListener();
     }
 
     private void initListener() {
-        findViewById(R.id.studentBtn).setOnClickListener(this);
-        findViewById(R.id.tutorBtn).setOnClickListener(this);
+        btnStudent.setOnClickListener(this);
+        btnTutor.setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.studentBtn:
+            case R.id.btnStudent:
                 startActivity(new Intent(this, studentWelcome.class));
                 break;
-            case R.id.tutorBtn:
+            case R.id.btnTutor:
                 //Test
                 break;
         }
