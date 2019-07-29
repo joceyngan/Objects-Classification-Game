@@ -30,6 +30,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                 startActivity(new Intent(this, studentWelcome.class));
                 break;
             case R.id.tutorBtn:
+                //Test
                 break;
         }
     }
