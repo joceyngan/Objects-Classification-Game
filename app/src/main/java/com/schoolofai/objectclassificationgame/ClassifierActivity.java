@@ -123,29 +123,12 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                     @Override
                     public void run() {
                       showResultsInBottomSheet(results);
-                      showFrameInfo(previewWidth + "x" + previewHeight);
-                      showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
-                      showCameraResolution(canvas.getWidth() + "x" + canvas.getHeight());
-                      showRotationInfo(String.valueOf(sensorOrientation));
-                      showInference(lastProcessingTimeMs + "ms");
                     }
                   });
             }
             readyForNextImage();
           }
         });
-  }
-
-  @Override
-  protected void onInferenceConfigurationChanged() {
-    if (croppedBitmap == null) {
-      // Defer creation until we're getting camera frames.
-      return;
-    }
-    final Device device = getDevice();
-    final Model model = getModel();
-    final int numThreads = getNumThreads();
-    runInBackground(() -> recreateClassifier(model, device, numThreads));
   }
 
   private void recreateClassifier(Model model, Device device, int numThreads) {
