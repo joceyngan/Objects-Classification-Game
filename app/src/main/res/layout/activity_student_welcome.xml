@@ -7,28 +7,99 @@
     android:orientation="vertical"
     tools:context=".studentWelcome" >
 
-    <TextView
-        android:id="@+id/textView2"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/semi_transparent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/treasure_hunt" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/studentWelcome" />
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/roomNumLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/roomNumEditText"
+        <TextView
+            android:id="@+id/tvWelcome1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Room Number" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:text="@string/tvWelcome1"
+            android:textSize="32sp"
+            android:gravity="center"
+            android:layout_weight="2"/>
 
-    <Button
-        android:id="@+id/enterRoomBtn"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tvWelcome2"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tvWelcome3"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter" />
+        android:layout_weight="2"
+        android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30sp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvEnterNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tvEnterNum"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:paddingBottom="10sp"/>
+
+            <EditText
+                android:id="@+id/roomNumEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Room Number"
+                android:background="@drawable/frame"
+                android:gravity="center"/>
+
+            <Button
+                android:id="@+id/enterRoomBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Enter" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3">
+        </TextView>
+    </LinearLayout>
 </LinearLayout>
