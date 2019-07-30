@@ -17,6 +17,7 @@
 package com.schoolofai.objectclassificationgame;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -34,6 +35,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -54,12 +56,17 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.schoolofai.objectclassificationgame.env.ImageUtils;
 import com.schoolofai.objectclassificationgame.env.Logger;
+import com.schoolofai.objectclassificationgame.tflite.Classifier;
 import com.schoolofai.objectclassificationgame.tflite.Classifier.Device;
+import com.schoolofai.objectclassificationgame.tflite.Classifier.Items;
 import com.schoolofai.objectclassificationgame.tflite.Classifier.Model;
 import com.schoolofai.objectclassificationgame.tflite.Classifier.Recognition;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -86,26 +93,50 @@ public abstract class CameraActivity extends AppCompatActivity
     private LinearLayout gestureLayout;
 
     private BottomSheetBehavior sheetBehavior;
+
     protected TextView recognitionTextView,
             recognition1TextView,
             recognition2TextView,
             recognitionValueTextView,
             recognition1ValueTextView,
             recognition2ValueTextView;
-    protected TextView rotationTextView,
-            inferenceTimeTextView;
+    protected TextView completedTv;
+    protected TextView item1, itemStatus1,
+            item2, itemStatus2,
+            item3, itemStatus3,
+            item4, itemStatus4,
+            item5, itemStatus5,
+            item6, itemStatus6,
+            item7, itemStatus7,
+            item8, itemStatus8,
+            item9, itemStatus9,
+            item10, itemStatus10,
+            itemNow, itemNowStatus;
     protected ImageView bottomSheetArrowImageView;
+    private String[] allitems = {"mouse",
+            "tench",
+            "goldfish",
+            "great white shark",
+            "tiger shark",
+            "hammerhead",
+            "electric ray",
+            "computer keyboard",
+            "cock",
+            "hen"};
+    private ArrayList<String> itemsList;
+    private ArrayList<Items> items;
 
     private Model model = Model.QUANTIZED;
     private Device device = Device.CPU;
     private int numThreads = -1;
+    private int completed = 0;
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         LOGGER.d("onCreate " + this);
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         setContentView(R.layout.activity_camera);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -121,6 +152,37 @@ public abstract class CameraActivity extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
+
+        itemsList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Random random = new Random();
+            String randomString = allitems[random.nextInt(allitems.length)];
+            Log.e("Random", randomString);
+            while (true) {
+                if (!itemsList.contains(randomString)) {
+                    itemsList.add(randomString);
+                    break;
+                } else {
+                    randomString = allitems[random.nextInt(allitems.length)];
+                    Log.e("Randoming", randomString);
+                }
+            }
+        }
+        items = new ArrayList<>();
+        for (int i  = 0; i < itemsList.size();  i++){
+            Items tmpItem = new Items(itemsList.get(i));
+            items.add(tmpItem);
+        }
+
+
+        initView();
+         tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+            }
+        });
+
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
@@ -168,18 +230,55 @@ public abstract class CameraActivity extends AppCompatActivity
                     }
                 });
 
-        recognitionTextView = findViewById(R.id.detected_item);
-        recognitionValueTextView = findViewById(R.id.detected_item_value);
-        recognition1TextView = findViewById(R.id.detected_item1);
-        recognition1ValueTextView = findViewById(R.id.detected_item1_value);
-        recognition2TextView = findViewById(R.id.detected_item2);
-        recognition2ValueTextView = findViewById(R.id.detected_item2_value);
+        //recognitionTextView = findViewById(R.id.detected_item);
+        //recognitionValueTextView = findViewById(R.id.detected_item_value);
+        //recognition1TextView = findViewById(R.id.detected_item1);
+        //recognition1ValueTextView = findViewById(R.id.detected_item1_value);
+        //recognition2TextView = findViewById(R.id.detected_item2);
+        //recognition2ValueTextView = findViewById(R.id.detected_item2_value);
 
 
         //model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
         //device = Device.valueOf(deviceSpinner.getSelectedItem().toString());
         //numThreads = Integer.parseInt(threadsTextView.getText().toString().trim());
         numThreads = 1;
+    }
+
+    private void initView() {
+        item1 = findViewById(R.id.item1);
+        item2 = findViewById(R.id.item2);
+        item3 = findViewById(R.id.item3);
+        item4 = findViewById(R.id.item4);
+        item5 = findViewById(R.id.item5);
+        item6 = findViewById(R.id.item6);
+        item7 = findViewById(R.id.item7);
+        item8 = findViewById(R.id.item8);
+        item9 = findViewById(R.id.item9);
+        item10 = findViewById(R.id.item10);
+        itemNow = findViewById(R.id.nowItem);
+        itemStatus1 = findViewById(R.id.item1Status);
+        itemStatus2 = findViewById(R.id.item2Status);
+        itemStatus3 = findViewById(R.id.item3Status);
+        itemStatus4 = findViewById(R.id.item4Status);
+        itemStatus5 = findViewById(R.id.item5Status);
+        itemStatus6 = findViewById(R.id.item6Status);
+        itemStatus7 = findViewById(R.id.item7Status);
+        itemStatus8 = findViewById(R.id.item8Status);
+        itemStatus9 = findViewById(R.id.item9Status);
+        itemStatus10 = findViewById(R.id.item10Status);
+        itemNowStatus = findViewById(R.id.nowItem1Value);
+        completedTv = findViewById(R.id.completeStatusValue);
+
+        item1.setText(itemsList.get(0));
+        item2.setText(itemsList.get(1));
+        item3.setText(itemsList.get(2));
+        item4.setText(itemsList.get(3));
+        item5.setText(itemsList.get(4));
+        item6.setText(itemsList.get(5));
+        item7.setText(itemsList.get(6));
+        item8.setText(itemsList.get(7));
+        item9.setText(itemsList.get(8));
+        item10.setText(itemsList.get(9));
     }
 
     protected int[] getRgbBytes() {
@@ -247,7 +346,7 @@ public abstract class CameraActivity extends AppCompatActivity
             rgbBytes = new int[previewWidth * previewHeight];
         }
         try {
-            final Image image = reader.acquireLatestImage();
+            final Image image = reader.acquireNextImage();
 
             if (image == null) {
                 return;
@@ -499,36 +598,103 @@ public abstract class CameraActivity extends AppCompatActivity
         }
     }
 
+    @SuppressLint("DefaultLocale")
     @UiThread
     protected void showResultsInBottomSheet(List<Recognition> results) {
         if (results != null && results.size() >= 3) {
             Recognition recognition = results.get(0);
+            Log.e("Testing Classification:", Integer.toString(results.size()));
             if (recognition != null) {
-                if (recognition.getTitle() != null)
-                    recognitionTextView.setText(recognition.getTitle());
-                if (recognition.getConfidence() != null)
-                    recognitionValueTextView.setText(
-                            String.format("%.2f", (100 * recognition.getConfidence())) + "%");
-            }
 
-            Recognition recognition1 = results.get(1);
-            if (recognition1 != null) {
-                if (recognition1.getTitle() != null)
-                    recognition1TextView.setText(recognition1.getTitle());
-                if (recognition1.getConfidence() != null)
-                    recognition1ValueTextView.setText(
-                            String.format("%.2f", (100 * recognition1.getConfidence())) + "%");
+                if (itemsList.contains(recognition.getTitle())) {
+                    itemNow.setText(recognition.getTitle());
+                    itemNowStatus.setText(String.format("%.2f", 100 * recognition.getConfidence()) + "%");
+                    Log.e("Testing Classification:", recognition.getTitle() + recognition.getConfidence());
+                    int location = itemsList.indexOf(recognition.getTitle());
+                    if (!items.get(location).isStatus() && recognition.getConfidence() > 0.7f){
+                        UpdateCompleteStatus(location);
+                        switch (location) {
+                            case 0:
+                                itemStatus1.setText(R.string.game_completed);
+                                break;
+                            case 1:
+                                itemStatus2.setText(R.string.game_completed);
+                                break;
+                            case 2:
+                                itemStatus3.setText(R.string.game_completed);
+                                break;
+                            case 3:
+                                itemStatus4.setText(R.string.game_completed);
+                                break;
+                            case 4:
+                                itemStatus5.setText(R.string.game_completed);
+                                break;
+                            case 5:
+                                itemStatus6.setText(R.string.game_completed);
+                                break;
+                            case 6:
+                                itemStatus7.setText(R.string.game_completed);
+                                break;
+                            case 7:
+                                itemStatus8.setText(R.string.game_completed);
+                                break;
+                            case 8:
+                                itemStatus9.setText(R.string.game_completed);
+                                break;
+                            case 9:
+                                itemStatus10.setText(R.string.game_completed);
+                                break;
+                        }
+                    }
+                } else {
+                    itemNow.setText("Unknown");
+                    itemNowStatus.setText(String.format("%.2f", 100 * recognition.getConfidence()) + "%");
+                }
             }
+            //Recognition recognition = results.get(0);
+            //if (recognition != null) {
+            //    if (recognition.getTitle() != null)
+            //        recognitionTextView.setText(recognition.getTitle());
+            //    if (recognition.getConfidence() != null)
+            //        recognitionValueTextView.setText(
+            //                String.format("%.2f", (100 * recognition.getConfidence())) + "%");
+            //}
 
-            Recognition recognition2 = results.get(2);
-            if (recognition2 != null) {
-                if (recognition2.getTitle() != null)
-                    recognition2TextView.setText(recognition2.getTitle());
-                if (recognition2.getConfidence() != null)
-                    recognition2ValueTextView.setText(
-                            String.format("%.2f", (100 * recognition2.getConfidence())) + "%");
-            }
+            //Recognition recognition1 = results.get(1);
+            //if (recognition1 != null) {
+            //    if (recognition1.getTitle() != null)
+            //        recognition1TextView.setText(recognition1.getTitle());
+            //    if (recognition1.getConfidence() != null)
+            //        recognition1ValueTextView.setText(
+            //                String.format("%.2f", (100 * recognition1.getConfidence())) + "%");
+            //}
+
+            //Recognition recognition2 = results.get(2);
+            //if (recognition2 != null) {
+            //    if (recognition2.getTitle() != null)
+            //        recognition2TextView.setText(recognition2.getTitle());
+            //    if (recognition2.getConfidence() != null)
+            //        recognition2ValueTextView.setText(
+            //                String.format("%.2f", (100 * recognition2.getConfidence())) + "%");
+            //}
         }
+    }
+
+    private void UpdateCompleteStatus(int location) {
+        items.get(location).setStatus(true);
+        completed += 1;
+        completedTv.setText(completed + " / 10");
+        if (completed == 2){
+            //tts.setPitch(0.8f);
+            tts.setSpeechRate(0.8f);
+            tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH, null, null);
+            stopTimer();
+        }
+
+    }
+
+    private void stopTimer() {
+        //do something with timer;
     }
 
 

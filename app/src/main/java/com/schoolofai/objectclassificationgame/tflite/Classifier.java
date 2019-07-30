@@ -100,6 +100,27 @@ public abstract class Classifier {
             return new ClassifierFloatMobileNet(activity, device, numThreads);
         }
     }
+    public static class Items{
+        public String getItemName() {
+            return itemName;
+        }
+
+        public boolean isStatus() {
+            return status;
+        }
+
+        private final String itemName;
+
+        public void setStatus(boolean status) {
+            this.status = status;
+        }
+
+        private boolean status = false;
+
+        public Items(String itemName) {
+            this.itemName = itemName;
+        }
+    }
 
     /** An immutable result returned by a Classifier describing what was recognized. */
     public static class Recognition {

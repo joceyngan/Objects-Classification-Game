@@ -22,6 +22,10 @@
 
     <string name="device">Device:</string>
     <string name="studentWelcome">Welcome to play the game \'Treasure Hunt\"!</string>
+    <string name="game_finding">Finding...</string>
+    <string name="completed_items">Completed Items</string>
+    <string name="completeStatus">0 / 10</string>
+    <string name="game_completed">Completed</string>
     <string-array name="devices">
         <item>CPU</item>
         <item>GPU</item>
