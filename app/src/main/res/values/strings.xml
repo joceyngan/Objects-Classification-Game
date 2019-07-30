@@ -33,4 +33,5 @@
     <string name="tvWelcome2">There are 10 items you need to find.</string>
     <string name="tvWelcome3">Please try your best and use the shortest time to find them.</string>
     <string name="tvEnterNum">Please enter your room number</string>
+    <string name="tvEnterRoom">Please create a room</string>
 </resources>

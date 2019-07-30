@@ -1,14 +1,20 @@
 package com.schoolofai.objectclassificationgame;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class login extends AppCompatActivity implements View.OnClickListener {
     private Button btnStudent, btnTutor;
+    private String m_Text = "",code="123";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +40,50 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                 startActivity(new Intent(this, studentWelcome.class));
                 break;
             case R.id.btnTutor:
-                //Test
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Please enter the authorization codes\n");
+
+                final EditText input = new EditText(this);
+
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                builder.setView(input);
+                builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                            m_Text = input.getText().toString();
+                            Log.e("Test", input.getText().toString());
+                        if (m_Text.equals(code)){
+                            startActivity(new Intent(getApplicationContext(), tutorRoomPage.class));
+                            m_Text="";
+                        }
+                        else {
+                            aboutDialogBox();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+
+
                 break;
         }
     }
+    public void aboutDialogBox(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("About");
+        builder.setMessage("Incorrect code, please try again!");
+        builder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
 }
