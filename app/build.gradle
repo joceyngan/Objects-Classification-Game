@@ -26,6 +26,7 @@ android {
 }
 
 apply from: 'download.gradle'
+apply plugin: 'com.google.gms.google-services'
 
 
 dependencies {
@@ -43,4 +44,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    //firebase
+    implementation 'com.google.firebase:firebase-core:17.0.1'
+    implementation 'com.google.firebase:firebase-firestore:20.2.0'
 }

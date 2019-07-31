@@ -87,9 +87,18 @@
                 android:id="@+id/roomNumEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Room Number"
                 android:background="@drawable/frame"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:hint="Room Number"
+                android:inputType="number|text" />
+
+            <EditText
+                android:id="@+id/playerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Team Name" />
 
             <Button
                 android:id="@+id/enterRoomBtn"
@@ -97,7 +106,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Enter"
-                android:textAllCaps="false"/>
+                android:textAllCaps="false"
+                android:visibility="visible"/>
 
         </LinearLayout>
 
