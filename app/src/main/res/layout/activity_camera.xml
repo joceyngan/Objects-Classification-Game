@@ -17,6 +17,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#00000000">
 
     <RelativeLayout
@@ -41,12 +42,14 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentTop="true"
             android:background="@color/semi_transparent">
-
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/tfl_logo" />
+                android:src="@drawable/treasure_hunt" />
         </androidx.appcompat.widget.Toolbar>
+
+
+
 
     </RelativeLayout>
 

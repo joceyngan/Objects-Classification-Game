@@ -39,4 +39,5 @@
     <string name="tvWelcome3">Please try your best and use the shortest time to find them.</string>
     <string name="tvEnterNum">Please enter your room number</string>
     <string name="tvEnterRoom">Please create a room</string>
+    <string name="tvOffline">Single Play</string>
 </resources>

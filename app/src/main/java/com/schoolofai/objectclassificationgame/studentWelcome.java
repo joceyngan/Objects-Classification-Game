@@ -26,5 +26,11 @@ public class studentWelcome extends AppCompatActivity {
                 startActivity(new Intent(getApplication(), ClassifierActivity.class));
             }
         });
+        findViewById(R.id.btnOffline).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplication(), ClassifierActivity.class));
+            }
+        });
     }
 }

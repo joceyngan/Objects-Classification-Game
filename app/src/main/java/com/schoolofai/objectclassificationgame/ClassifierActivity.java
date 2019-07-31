@@ -57,6 +57,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     return R.layout.camera_connection_fragment;
   }
 
+
   @Override
   protected Size getDesiredPreviewFrameSize() {
     return DESIRED_PREVIEW_SIZE;

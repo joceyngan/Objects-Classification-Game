@@ -91,6 +91,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private Runnable imageConverter;
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
+    private boolean stopTimer=false;
 
     private BottomSheetBehavior sheetBehavior;
 
@@ -131,6 +132,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private int numThreads = -1;
     private int completed = 0;
     private TextToSpeech tts;
+    private Long startTime;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -141,7 +143,10 @@ public abstract class CameraActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
+        handler = new Handler();
+        startTime = System.currentTimeMillis();
+       // handler.removeCallbacks(updateTimer);
+        handler.postDelayed(updateTimer, 10);
         if (hasPermission()) {
             setFragment();
         } else {
@@ -243,6 +248,19 @@ public abstract class CameraActivity extends AppCompatActivity
         //numThreads = Integer.parseInt(threadsTextView.getText().toString().trim());
         numThreads = 1;
     }
+
+    private Runnable updateTimer = new Runnable() {
+        public void run() {
+            final TextView time = (TextView) findViewById(R.id.time);
+            Long spentTime = System.currentTimeMillis() - startTime;
+            Long minius = (spentTime/1000)/60;
+            Long seconds = (spentTime/1000) % 60;
+            Long mill = spentTime%1000/10;
+            time.setText(String.format("%02d",minius)+":"+String.format("%02d",seconds)+":"+String.format("%02d",mill));
+            if(stopTimer==false)
+            handler.postDelayed(this, 0);
+        }
+    };
 
     private void initView() {
         item1 = findViewById(R.id.item1);
@@ -694,6 +712,8 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     private void stopTimer() {
+        Log.d("do stop","done");
+        stopTimer=true;
         //do something with timer;
     }
 
