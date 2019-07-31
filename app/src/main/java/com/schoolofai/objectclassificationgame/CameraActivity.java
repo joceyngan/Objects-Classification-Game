@@ -146,9 +146,11 @@ public abstract class CameraActivity extends AppCompatActivity
         handler = new Handler();
         startTime = System.currentTimeMillis();
        // handler.removeCallbacks(updateTimer);
-        handler.postDelayed(updateTimer, 10);
+
         if (hasPermission()) {
             setFragment();
+            handler = new Handler();
+            handler.postDelayed(updateTimer,10);
         } else {
             requestPermission();
         }
@@ -476,15 +478,21 @@ public abstract class CameraActivity extends AppCompatActivity
                 case 1:
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         setFragment();
+                        handler = new Handler();
+                        handler.postDelayed(updateTimer,10);
                     } else {
                         requestPermission();
+
                     }
                     break;
                 case 2:
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                         setFragment();
+                        handler = new Handler();
+                        handler.postDelayed(updateTimer,10);
                     } else {
                         requestPermission();
+
                     }
                     break;
                 default:
