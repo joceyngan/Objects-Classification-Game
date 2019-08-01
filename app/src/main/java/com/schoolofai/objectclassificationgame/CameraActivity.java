@@ -42,6 +42,8 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -92,6 +94,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
     private boolean stopTimer=false;
+    private Animation alpha, rotate;
 
     private BottomSheetBehavior sheetBehavior;
 
@@ -101,7 +104,7 @@ public abstract class CameraActivity extends AppCompatActivity
             recognitionValueTextView,
             recognition1ValueTextView,
             recognition2ValueTextView;
-    protected TextView completedTv;
+    protected TextView completedTv, tvWon;
     protected TextView item1, itemStatus1,
             item2, itemStatus2,
             item3, itemStatus3,
@@ -131,6 +134,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private Device device = Device.CPU;
     private int numThreads = -1;
     private int completed = 0;
+    private int itemLeft = 0;
     private TextToSpeech tts;
     private Long startTime;
 
@@ -159,6 +163,11 @@ public abstract class CameraActivity extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
+        tvWon = (TextView)findViewById(R.id.tvWon);
+        alpha = AnimationUtils.loadAnimation(this,R.anim.alpha);
+        alpha.reset();
+        rotate = AnimationUtils.loadAnimation(this,R.anim.rotate);
+        rotate.reset();
 
         itemsList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -645,33 +654,43 @@ public abstract class CameraActivity extends AppCompatActivity
                         switch (location) {
                             case 0:
                                 itemStatus1.setText(R.string.game_completed);
+                                itemStatus1.startAnimation(alpha);
                                 break;
                             case 1:
                                 itemStatus2.setText(R.string.game_completed);
+                                itemStatus2.startAnimation(alpha);
                                 break;
                             case 2:
                                 itemStatus3.setText(R.string.game_completed);
+                                itemStatus3.startAnimation(alpha);
                                 break;
                             case 3:
                                 itemStatus4.setText(R.string.game_completed);
+                                itemStatus4.startAnimation(alpha);
                                 break;
                             case 4:
                                 itemStatus5.setText(R.string.game_completed);
+                                itemStatus5.startAnimation(alpha);
                                 break;
                             case 5:
                                 itemStatus6.setText(R.string.game_completed);
+                                itemStatus6.startAnimation(alpha);
                                 break;
                             case 6:
                                 itemStatus7.setText(R.string.game_completed);
+                                itemStatus7.startAnimation(alpha);
                                 break;
                             case 7:
                                 itemStatus8.setText(R.string.game_completed);
+                                itemStatus8.startAnimation(alpha);
                                 break;
                             case 8:
                                 itemStatus9.setText(R.string.game_completed);
+                                itemStatus9.startAnimation(alpha);
                                 break;
                             case 9:
                                 itemStatus10.setText(R.string.game_completed);
+                                itemStatus10.startAnimation(alpha);
                                 break;
                         }
                     }
@@ -713,6 +732,18 @@ public abstract class CameraActivity extends AppCompatActivity
         items.get(location).setStatus(true);
         completed += 1;
         completedTv.setText(completed + " / 10");
+        itemLeft = 2 - completed;
+        if (itemLeft == 0) {
+            tvWon.setText("Congratulations!\n You have completed this game!");
+            tvWon.startAnimation(rotate);
+        }
+        else if (itemLeft == 1) {
+            tvWon.setText(itemLeft + " item left...");
+            tvWon.startAnimation(alpha);
+        }else{
+            tvWon.setText(itemLeft + " items left...");
+            tvWon.startAnimation(alpha);
+        }
         if (completed == 2){
             //tts.setPitch(0.8f);
             tts.setSpeechRate(0.8f);
