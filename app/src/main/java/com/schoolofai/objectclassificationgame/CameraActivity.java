@@ -257,8 +257,8 @@ public abstract class CameraActivity extends AppCompatActivity
             Long spentTime = System.currentTimeMillis() - startTime;
             Long minius = (spentTime/1000)/60;
             Long seconds = (spentTime/1000) % 60;
-            Long mill = spentTime%1000/10;
-            time.setText(String.format("%02d",minius)+":"+String.format("%02d",seconds)+":"+String.format("%02d",mill));
+            Long mill = spentTime;
+            time.setText(String.format("%02d",minius)+":"+String.format("%02d",seconds)+":"+String.format("%02d",mill).substring(Long.toString(mill).length()-3,Long.toString(mill).length()-1));
             if(stopTimer==false)
             handler.postDelayed(this, 0);
         }
