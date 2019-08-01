@@ -258,6 +258,7 @@ public abstract class CameraActivity extends AppCompatActivity
             Long minius = (spentTime/1000)/60;
             Long seconds = (spentTime/1000) % 60;
             Long mill = spentTime;
+            if(Long.toString(mill)!=null&&Long.toString(mill).length()>=4)
             time.setText(String.format("%02d",minius)+":"+String.format("%02d",seconds)+":"+String.format("%02d",mill).substring(Long.toString(mill).length()-3,Long.toString(mill).length()-1));
             if(stopTimer==false)
             handler.postDelayed(this, 0);
@@ -478,6 +479,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 case 1:
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         setFragment();
+                        Log.d("Test1","DONE");
                         handler = new Handler();
                         handler.postDelayed(updateTimer,10);
                     } else {
@@ -488,6 +490,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 case 2:
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                         setFragment();
+                        Log.d("Test2","DONE");
                         handler = new Handler();
                         handler.postDelayed(updateTimer,10);
                     } else {
