@@ -6,6 +6,15 @@ import java.util.List;
 public class Room {
     private int roomId;
     private List<Player> players = new ArrayList<>();
+    private int status = 0;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public int getRoomId() {
         return roomId;

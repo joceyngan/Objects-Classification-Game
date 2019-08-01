@@ -12,12 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.schoolofai.objectclassificationgame.models.Player;
 import com.schoolofai.objectclassificationgame.models.Room;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class studentWelcome extends AppCompatActivity {
 
@@ -60,6 +64,8 @@ public class studentWelcome extends AppCompatActivity {
         progressDialog.setMessage("Please Wait");
         progressDialog.setCancelable(false);
         progressDialog.show();
+
+
         db.collection("rooms").document(roomNumEditText.getText().toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -78,6 +84,20 @@ public class studentWelcome extends AppCompatActivity {
                         public void onSuccess(Void aVoid) {
 
                             Toast.makeText(getApplicationContext(), "Join success", Toast.LENGTH_LONG).show();
+
+                            db.collection("rooms").document(roomNumEditText.getText().toString()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                    if (e != null){
+                                        Log.e("Listener Error", "34, ", e );
+                                        return;
+                                    }
+                                    room = documentSnapshot.toObject(Room.class);
+                                    if (room.getStatus() == 1){
+                                        startActivity(new Intent(getApplicationContext(), ClassifierActivity.class));
+                                    }
+                                }
+                            });
 
                         }
                     });

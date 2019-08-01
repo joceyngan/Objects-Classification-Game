@@ -67,11 +67,12 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                         if (checked){
-                            createRoom();
+                            //createRoom();
                         }else{
                             Toast.makeText(getApplicationContext(), "Room Number is exist\nPlease choose an other one", Toast.LENGTH_LONG).show();
                             progressDialog.dismiss();
                         }
+                        createRoom();
                     }
                 });
                 break;
@@ -87,8 +88,8 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(Void aVoid) {
                 progressDialog.dismiss();
                 Intent intent = new Intent(getApplicationContext(), tutorRoomPage.class);
-
-                startActivity(new Intent(getApplicationContext(), tutorRoomPage.class));
+                intent.putExtra("roomNumber", roomNum);
+                startActivity(intent);
             }
         });
     }

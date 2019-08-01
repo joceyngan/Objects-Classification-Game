@@ -1,8 +1,11 @@
 package com.schoolofai.objectclassificationgame;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 
@@ -26,16 +29,31 @@ public class tutorRoomPage extends AppCompatActivity{
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListView listView;
     private Room room = new Room();
+    private int roomNumber;
+    private String TAG = "tutorRoomPage";
+
+    private Button buttonStart;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutor_room_page);
+        Intent intent = getIntent();
+        roomNumber = intent.getIntExtra("roomNumber" , 0);
+        Log.e(TAG, "room: " + roomNumber);
 
         listView = findViewById(R.id.teamList);
 
-        db.collection("rooms").document("1234").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        findViewById(R.id.btnStart).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                room.setStatus(1);
+                db.collection("rooms").document(Integer.toString(roomNumber)).set(room);
+            }
+        });
+
+        db.collection("rooms").document(Integer.toString(roomNumber)).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 if (e != null){
@@ -44,6 +62,9 @@ public class tutorRoomPage extends AppCompatActivity{
                 }
                 room = documentSnapshot.toObject(Room.class);
                 List<Player> players = room.getPlayers();
+
+                Log.e(TAG, "Player: " + players.size());
+
             }
         });
 
