@@ -53,7 +53,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                             m_Text = input.getText().toString();
                             Log.e("Test", input.getText().toString());
                         if (m_Text.equals(code)){
-                            startActivity(new Intent(getApplicationContext(), tutorRoomPage.class));
+                            startActivity(new Intent(getApplicationContext(), tutorWelcome.class));
                             m_Text="";
                         }
                         else {

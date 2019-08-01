@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "792995969245",
+    "firebase_url": "https://treasure-hunt-v2.firebaseio.com",
+    "project_id": "treasure-hunt-v2",
+    "storage_bucket": "treasure-hunt-v2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792995969245:android:6ce3792aa856414b",
+        "android_client_info": {
+          "package_name": "com.schoolofai.objectclassificationgame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "792995969245-358vo5fe76e0u95uj0j1eu9bak8lqvsd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjL8_BMBskemy-XZFVs1XEb3JcvZCVSCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "792995969245-358vo5fe76e0u95uj0j1eu9bak8lqvsd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

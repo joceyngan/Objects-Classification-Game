@@ -20,84 +20,88 @@
             android:src="@drawable/treasure_hunt" />
     </androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvWelcome1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tvWelcome1"
-            android:textSize="32sp"
-            android:textColor="#000000"
-            android:gravity="center"
-            android:layout_weight="2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tvWelcome2"
-            android:textSize="24sp"
-            android:textColor="#000000"
-            android:gravity="center"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tvWelcome3"
-            android:textSize="24sp"
-            android:textColor="#000000"
-            android:gravity="center"
-            android:layout_weight="1"/>
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvWelcome1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:text="@string/tvWelcome1"
+        android:textColor="#000000"
+        android:textSize="32sp" />
 
-        <TextView
-            android:layout_width="match_parent"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/tvWelcome2"
+        android:textColor="#000000"
+        android:textSize="24sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/tvWelcome3"
+        android:textColor="#000000"
+        android:textSize="24sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"></TextView>
+
+    <TextView
+        android:id="@+id/tvEnterNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10sp"
+        android:text="@string/tvEnterNum"
+        android:textColor="#000000"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/roomNumEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/frame"
+        android:gravity="center"
+        android:hint="Room Number"
+        android:inputType="number|text" />
+
+    <EditText
+        android:id="@+id/playerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Team Name" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/enterRoomBtn"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-        </TextView>
+            android:layout_gravity="center"
+            android:text="Enter"
+            android:textAllCaps="false"
+            android:visibility="visible" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnLeave"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="30sp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:text="Leave"
+            android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/tvEnterNum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/tvEnterNum"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:paddingBottom="10sp"/>
-
-            <EditText
-                android:id="@+id/roomNumEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Room Number"
-                android:background="@drawable/frame"
-                android:gravity="center"/>
-
-            <Button
-                android:id="@+id/enterRoomBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Enter"
-                android:textAllCaps="false"/>
 
             <TextView
                 android:id="@+id/tvOffline"
@@ -119,11 +123,9 @@
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
-        </TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"></TextView>
 
-    </LinearLayout>
 </LinearLayout>
