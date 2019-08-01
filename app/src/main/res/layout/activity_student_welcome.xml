@@ -102,26 +102,25 @@
             android:text="Leave"
             android:visibility="gone"/>
 
-
-            <TextView
-                android:id="@+id/tvOffline"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/tvOffline"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:paddingTop="10sp" />
-
-            <Button
-                android:id="@+id/btnOffline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Offine Play"
-                android:textAllCaps="false"/>
-
         </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvOffline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/tvOffline"
+        android:textSize="24sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:paddingTop="10sp" />
+
+    <Button
+        android:id="@+id/btnOffline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Offine Play"
+        android:textAllCaps="false"/>
 
     <TextView
         android:layout_width="match_parent"
