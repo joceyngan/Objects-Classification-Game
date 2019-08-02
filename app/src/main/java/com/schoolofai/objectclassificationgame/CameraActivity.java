@@ -174,14 +174,12 @@ public abstract class CameraActivity extends AppCompatActivity
         for (int i = 0; i < 10; i++) {
             Random random = new Random();
             String randomString = allitems[random.nextInt(allitems.length)];
-            //Log.e("Random", randomString);
             while (true) {
                 if (!itemsList.contains(randomString)) {
                     itemsList.add(randomString);
                     break;
                 } else {
                     randomString = allitems[random.nextInt(allitems.length)];
-                    //Log.e("Randoming", randomString);
                 }
             }
         }
@@ -266,7 +264,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
             SimpleDateFormat sdf = new SimpleDateFormat("mm:ss:SS");
             Date resultdate = new Date(spentTime);
-            System.out.println(sdf.format(resultdate));
+            //System.out.println(sdf.format(resultdate));
             time.setText(sdf.format(resultdate));
 
             if(!stopTimer){
@@ -463,19 +461,22 @@ public abstract class CameraActivity extends AppCompatActivity
         } catch (final InterruptedException e) {
             LOGGER.e(e, "Exception!");
         }
-
+        Log.e("Pause", this.toString());
         super.onPause();
     }
 
     @Override
     public synchronized void onStop() {
         LOGGER.d("onStop " + this);
+        Log.e("Stop", this.toString());
         super.onStop();
     }
 
     @Override
     public synchronized void onDestroy() {
         LOGGER.d("onDestroy " + this);
+        Log.e("Destory", this.toString());
+        timer.cancel();
         super.onDestroy();
     }
 
