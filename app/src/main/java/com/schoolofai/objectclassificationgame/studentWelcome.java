@@ -37,9 +37,7 @@ public class studentWelcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_welcome);
-
         player = new Player();
-
         initView();
         initListener();
     }
@@ -54,6 +52,13 @@ public class studentWelcome extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 joinRoom();
+            }
+        });
+
+        findViewById(R.id.btnOffline).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplication(), ClassifierActivity.class));
             }
         });
     }
@@ -106,11 +111,6 @@ public class studentWelcome extends AppCompatActivity {
                 }
             }
         });
-        findViewById(R.id.btnOffline).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplication(), ClassifierActivity.class));
-            }
-        });
+
     }
 }
