@@ -722,17 +722,10 @@ public abstract class CameraActivity extends AppCompatActivity
             //tts.setPitch(0.8f);
             tts.setSpeechRate(0.8f);
             tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH, null, null);
-            stopTimer();
+            timer.cancel();
         }
 
     }
-
-    private void stopTimer() {
-        Log.d("do stop","done");
-        stopTimer=true;
-        //do something with timer;
-    }
-
 
     protected Model getModel() {
         return model;

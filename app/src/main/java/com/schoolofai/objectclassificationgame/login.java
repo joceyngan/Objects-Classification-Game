@@ -67,9 +67,9 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                         dialog.cancel();
                     }
                 });
-                builder.show();
+                //builder.show();
 
-
+                startActivity(new Intent(getApplicationContext(), tutorWelcome.class));
                 break;
         }
     }
