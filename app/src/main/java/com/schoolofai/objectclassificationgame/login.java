@@ -12,6 +12,8 @@ import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.schoolofai.objectclassificationgame.tutor.tutorWelcome;
+
 public class login extends AppCompatActivity implements View.OnClickListener {
     private Button btnStudent, btnTutor;
     private String m_Text = "",code="123";

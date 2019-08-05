@@ -34,19 +34,17 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
 
         TextView tvTeamName = listItem.findViewById(R.id.tvTeamName);
         TextView tvStatus = listItem.findViewById(R.id.tvStatus);
-        TextView tvCompleted = listItem.findViewById(R.id.tvCompleted);
         if ((position +1 ) % 2 == 0){
             listItem.setBackgroundColor(Color.parseColor("#f2f1ef"));
         }
 
         tvTeamName.setText(player.getPlayerName());
-        tvCompleted.setText("Completed:" + player.getCompletedItem() + " / 10");
         switch (player.getStatus()){
             case 0:
-                tvStatus.setText("Status: Waiting Start");
+                tvStatus.setText("Waiting");
                 break;
             case 1:
-                tvStatus.setText("Status: Playing");
+                tvStatus.setText("Ready");
                 break;
             case 2:
                 tvStatus.setText("Status: Completed");

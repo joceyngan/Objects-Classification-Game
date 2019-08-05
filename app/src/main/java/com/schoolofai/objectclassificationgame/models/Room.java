@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
-    private int roomId;
+    private String roomId;
     private List<Player> players = new ArrayList<>();
     private int status = 0;
 
@@ -16,11 +16,11 @@ public class Room {
         this.status = status;
     }
 
-    public int getRoomId() {
+    public String getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 

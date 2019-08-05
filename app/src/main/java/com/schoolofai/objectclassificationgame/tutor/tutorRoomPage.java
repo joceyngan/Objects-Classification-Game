@@ -1,4 +1,4 @@
-package com.schoolofai.objectclassificationgame;
+package com.schoolofai.objectclassificationgame.tutor;
 
 
 import android.content.Intent;
@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.schoolofai.objectclassificationgame.R;
 import com.schoolofai.objectclassificationgame.customview.TeamListAdapter;
 import com.schoolofai.objectclassificationgame.models.Player;
 import com.schoolofai.objectclassificationgame.models.Room;
