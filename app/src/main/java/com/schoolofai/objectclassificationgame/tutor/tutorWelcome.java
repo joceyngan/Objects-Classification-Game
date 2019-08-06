@@ -102,7 +102,9 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         db.collection("rooms").document(roomNum).delete();
-        listenerChange.remove();
+        if (listenerChange !=null){
+            listenerChange.remove();
+        }
         room = null;
         super.onDestroy();
     }

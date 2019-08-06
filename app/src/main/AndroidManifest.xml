@@ -16,9 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".tutor.tutorRoomPage"></activity>
+        <activity android:name=".student.studentBase"></activity>
+        <activity android:name=".tutor.tutorRoomPage" />
         <activity android:name=".tutor.tutorWelcome" />
-        <activity android:name=".studentWelcome" />
+        <activity android:name=".student.studentWelcome" />
         <activity android:name=".login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

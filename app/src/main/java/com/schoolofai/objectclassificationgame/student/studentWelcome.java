@@ -1,4 +1,4 @@
-package com.schoolofai.objectclassificationgame;
+package com.schoolofai.objectclassificationgame.student;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.schoolofai.objectclassificationgame.ClassifierActivity;
+import com.schoolofai.objectclassificationgame.R;
 import com.schoolofai.objectclassificationgame.models.Player;
 import com.schoolofai.objectclassificationgame.models.Room;
 

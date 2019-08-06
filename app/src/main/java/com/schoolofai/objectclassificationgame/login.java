@@ -12,6 +12,8 @@ import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.schoolofai.objectclassificationgame.student.studentBase;
+import com.schoolofai.objectclassificationgame.student.studentWelcome;
 import com.schoolofai.objectclassificationgame.tutor.tutorWelcome;
 
 public class login extends AppCompatActivity implements View.OnClickListener {
@@ -39,7 +41,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btnStudent:
-                startActivity(new Intent(this, studentWelcome.class));
+                startActivity(new Intent(this, studentBase.class));
                 break;
             case R.id.btnTutor:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
