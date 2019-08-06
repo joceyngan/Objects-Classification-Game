@@ -21,6 +21,7 @@ import com.schoolofai.objectclassificationgame.models.Room;
 import static com.schoolofai.objectclassificationgame.tutor.tutorWelcome.buttonCreate;
 import static com.schoolofai.objectclassificationgame.tutor.tutorWelcome.randomRoomNumber;
 import static com.schoolofai.objectclassificationgame.tutor.tutorWelcome.roomNum;
+import static com.schoolofai.objectclassificationgame.tutor.tutorWelcome.room;
 
 public class RoomNumberFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -61,7 +62,6 @@ public class RoomNumberFragment extends Fragment {
                                 break;
                             }
                         }
-                        Room room = new Room();
                         room.setRoomId(roomNum);
                         db.collection("rooms").document(roomNum).set(room);
                         TextView roomNumberTextView = view.findViewById(R.id.roomNumberTextView);

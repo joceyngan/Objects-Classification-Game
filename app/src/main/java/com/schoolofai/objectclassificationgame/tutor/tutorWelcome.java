@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.schoolofai.objectclassificationgame.R;
 import com.schoolofai.objectclassificationgame.models.Room;
 
@@ -23,6 +24,7 @@ import static com.schoolofai.objectclassificationgame.tutor.ReadyRoomFragment.li
 public class tutorWelcome extends AppCompatActivity implements View.OnClickListener {
 
     protected static String roomNum;
+    protected static Room room = new Room();
 
     protected static Button buttonCreate, buttonStart, buttonLeaveRoom;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -72,7 +74,11 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
                 Log.e("buttonStart", "Clicked");
 
                 buttonStart.setVisibility(View.GONE);
+                buttonLeaveRoom.setVisibility(View.VISIBLE);
                 listenerChange.remove();
+                room.setStatus(1);
+                db.collection("rooms").document(roomNum).set(room, SetOptions.merge());
+                getSupportFragmentManager().beginTransaction().replace(R.id.tutorFragmentView, new PlayingRoomFragment()).commit();
                 break;
             case R.id.buttonLeaveRoom:
                 break;
@@ -81,7 +87,8 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
 
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setMessage("Are you sure you want to exit?")
+                .setTitle("Warning!")
+                .setMessage("Room will be closed when you exit.\nAre you sure want to exit?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -95,6 +102,8 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         db.collection("rooms").document(roomNum).delete();
+        listenerChange.remove();
+        room = null;
         super.onDestroy();
     }
 }
