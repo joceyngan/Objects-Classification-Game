@@ -6,9 +6,11 @@ import android.os.Bundle;
 
 import com.schoolofai.objectclassificationgame.R;
 import com.schoolofai.objectclassificationgame.models.Player;
+import com.schoolofai.objectclassificationgame.models.Room;
 
 public class studentBase extends AppCompatActivity {
     protected static Player player = new Player();
+    protected static Room currentroom = new Room();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

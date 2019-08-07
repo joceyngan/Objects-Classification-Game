@@ -43,7 +43,7 @@ public class EnterTeamNameFragment extends Fragment {
                 if (teamName.equals("")){
                     editTextTeamName.setError("Team Name cannot blank");
                     return;
-                }else if (teamName.length() > 10){
+                }else if (teamName.length() > 12){
                     editTextTeamName.setError("Team Name cannot longer then 12 character");
                     return;
                 }

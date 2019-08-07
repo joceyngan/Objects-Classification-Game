@@ -38,4 +38,23 @@ public class Room {
 
     public Room() {
     }
+
+    public void UpdateStatus(String uid, int status){
+        Player playertmp = players.get(Integer.parseInt(uid));
+        playertmp.setStatus(status);
+        players.set(Integer.parseInt(uid), playertmp);
+    }
+
+    public void UpdateCompleted(String uid, int completed){
+        Player playertmp = players.get(Integer.parseInt(uid));
+        playertmp.setCompletedItem(completed);
+        players.set(Integer.parseInt(uid), playertmp);
+    }
+
+    public void UpdateCompleteTime(String playerUid, String finishTime) {
+        Player playertmp = players.get(Integer.parseInt(playerUid));
+        playertmp.setCompletedTime(finishTime);
+        players.set(Integer.parseInt(playerUid), playertmp);
+
+    }
 }

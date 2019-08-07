@@ -81,6 +81,8 @@ public class ReadyRoomFragment extends Fragment {
                     readyValueTv.setText(readyCount + " / " + playerCount);
                     if (readyCount == playerCount && readyCount !=0){
                         buttonStart.setClickable(true);
+                    }else{
+                        buttonStart.setClickable(false);
                     }
                 }
             }

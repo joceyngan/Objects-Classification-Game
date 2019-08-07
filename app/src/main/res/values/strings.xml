@@ -41,4 +41,7 @@
     <string name="tvEnterRoom">Please create a room</string>
     <string name="tvWon">Please try your best to find all items</string>
     <string name="tvOffline">Single Play</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

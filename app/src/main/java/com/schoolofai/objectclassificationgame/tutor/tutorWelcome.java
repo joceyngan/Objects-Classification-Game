@@ -24,7 +24,7 @@ import static com.schoolofai.objectclassificationgame.tutor.ReadyRoomFragment.li
 public class tutorWelcome extends AppCompatActivity implements View.OnClickListener {
 
     protected static String roomNum;
-    protected static Room room = new Room();
+    protected static Room room;
 
     protected static Button buttonCreate, buttonStart, buttonLeaveRoom;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -36,6 +36,7 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
 
         initView();
         initListener();
+        room = new Room();
 
         getSupportFragmentManager().beginTransaction().add(R.id.tutorFragmentView, new RoomNumberFragment()).commit();
     }

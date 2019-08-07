@@ -10,7 +10,7 @@ public class Player implements Parcelable {
     private String playerName;
     private int completedItem;
     private int status;
-    private Timestamp completedTime;
+    private String completedTime;
 
     public String getPlayerUid() {
         return playerUid;
@@ -30,11 +30,11 @@ public class Player implements Parcelable {
         this.status = status;
     }
 
-    public Timestamp getCompletedTime() {
+    public String getCompletedTime() {
         return completedTime;
     }
 
-    public void setCompletedTime(Timestamp completedTime) {
+    public void setCompletedTime(String completedTime) {
         this.completedTime = completedTime;
     }
 

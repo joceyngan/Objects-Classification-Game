@@ -8,9 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:textColorHint">@color/buttonTextColor</item>
-        <item name="colorControlNormal">@color/buttonTextColor</item>
-        <item name="colorControlActivated">@color/buttonTextColor</item>
-        <item name="colorControlHighlight">@color/buttonTextColor</item>
     </style>
 
 

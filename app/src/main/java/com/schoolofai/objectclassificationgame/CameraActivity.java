@@ -20,6 +20,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -52,13 +53,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Transaction;
 import com.schoolofai.objectclassificationgame.env.ImageUtils;
 import com.schoolofai.objectclassificationgame.env.Logger;
+import com.schoolofai.objectclassificationgame.models.Player;
+import com.schoolofai.objectclassificationgame.models.Room;
 import com.schoolofai.objectclassificationgame.tflite.Classifier;
 import com.schoolofai.objectclassificationgame.tflite.Classifier.Device;
 import com.schoolofai.objectclassificationgame.tflite.Classifier.Items;
@@ -98,7 +107,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private Runnable imageConverter;
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
-    private boolean stopTimer=false;
+    private boolean stopTimer = false;
     private Animation alpha, rotate;
 
     private BottomSheetBehavior sheetBehavior;
@@ -139,7 +148,11 @@ public abstract class CameraActivity extends AppCompatActivity
     private TextView time;
     private Timer timer;
 
-
+    private Player player;
+    private String finishTime;
+    private String roomNumber;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DocumentReference documentReference;
 
 
     @Override
@@ -151,6 +164,12 @@ public abstract class CameraActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        Intent intent = getIntent();
+        roomNumber = intent.getStringExtra("roomNumber");
+        player = intent.getParcelableExtra("player");
+        Log.e("Player", player.getPlayerName() + player.getPlayerUid());
+
         handler = new Handler();
         startTime = System.currentTimeMillis();
 
@@ -164,10 +183,10 @@ public abstract class CameraActivity extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-        tvWon = (TextView)findViewById(R.id.tvWon);
-        alpha = AnimationUtils.loadAnimation(this,R.anim.alpha);
+        tvWon = (TextView) findViewById(R.id.tvWon);
+        alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
         alpha.reset();
-        rotate = AnimationUtils.loadAnimation(this,R.anim.rotate);
+        rotate = AnimationUtils.loadAnimation(this, R.anim.rotate);
         rotate.reset();
 
         itemsList = new ArrayList<>();
@@ -184,7 +203,7 @@ public abstract class CameraActivity extends AppCompatActivity
             }
         }
         items = new ArrayList<>();
-        for (int i  = 0; i < itemsList.size();  i++){
+        for (int i = 0; i < itemsList.size(); i++) {
             Items tmpItem = new Items(itemsList.get(i));
             items.add(tmpItem);
         }
@@ -250,7 +269,7 @@ public abstract class CameraActivity extends AppCompatActivity
             public void run() {
                 timerHandler.sendEmptyMessage(0);
             }
-        }, 1,1);
+        }, 1, 1);
     }
 
     private Handler timerHandler = new Handler(new Handler.Callback() {
@@ -258,16 +277,17 @@ public abstract class CameraActivity extends AppCompatActivity
         public boolean handleMessage(Message msg) {
             //Log.e("Handler", "callbackHandler msg.what:" + msg.what);
             Long spentTime = System.currentTimeMillis() - startTime;
-            Long minius = (spentTime/1000)/60;
-            Long seconds = (spentTime/1000) % 60;
+            Long minius = (spentTime / 1000) / 60;
+            Long seconds = (spentTime / 1000) % 60;
             Long mill = spentTime;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("mm:ss:SS");
+            SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
             Date resultdate = new Date(spentTime);
             //System.out.println(sdf.format(resultdate));
+            finishTime = sdf.format(resultdate);
             time.setText(sdf.format(resultdate));
 
-            if(!stopTimer){
+            if (!stopTimer) {
                 //timer.cancel();
             }
             return false;
@@ -649,7 +669,7 @@ public abstract class CameraActivity extends AppCompatActivity
                     itemNowStatus.setText(String.format("%.2f", 100 * recognition.getConfidence()) + "%");
                     //Log.e("Testing Classification:", recognition.getTitle() + recognition.getConfidence());
                     int location = itemsList.indexOf(recognition.getTitle());
-                    if (!items.get(location).isStatus() && recognition.getConfidence() > 0.7f){
+                    if (!items.get(location).isStatus() && recognition.getConfidence() > 0.7f) {
                         UpdateCompleteStatus(location);
                         switch (location) {
                             case 0:
@@ -705,26 +725,39 @@ public abstract class CameraActivity extends AppCompatActivity
     private void UpdateCompleteStatus(int location) {
         items.get(location).setStatus(true);
         completed += 1;
+        player.setCompletedItem(completed);
+        documentReference = db.collection("rooms").document(roomNumber);
+        db.runTransaction(new Transaction.Function<Void>() {
+            @Nullable
+            @Override
+            public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                DocumentSnapshot documentSnapshot = transaction.get(documentReference);
+                Room room = documentSnapshot.toObject(Room.class);
+                room.UpdateCompleted(player.getPlayerUid(), completed);
+                room.UpdateCompleteTime(player.getPlayerUid(), finishTime);
+                transaction.set(documentReference, room);
+                return null;
+            }
+        });
+
         completedTv.setText(completed + " / 10");
         itemLeft = 2 - completed;
         if (itemLeft == 0) {
             tvWon.setText("Congratulations!\n You have completed this game!");
             tvWon.startAnimation(rotate);
-        }
-        else if (itemLeft == 1) {
+        } else if (itemLeft == 1) {
             tvWon.setText(itemLeft + " item left...");
             tvWon.startAnimation(alpha);
-        }else{
+        } else {
             tvWon.setText(itemLeft + " items left...");
             tvWon.startAnimation(alpha);
         }
-        if (completed == 2){
+        if (completed == 2) {
             //tts.setPitch(0.8f);
             tts.setSpeechRate(0.8f);
             tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH, null, null);
             timer.cancel();
         }
-
     }
 
     protected Model getModel() {
