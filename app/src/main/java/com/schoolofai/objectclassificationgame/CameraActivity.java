@@ -85,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -113,7 +114,6 @@ public abstract class CameraActivity extends AppCompatActivity
     private Runnable imageConverter;
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
-    private boolean stopTimer = false;
     private Animation alpha, rotate;
     private MediaPlayer win;
 
@@ -150,7 +150,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private int completed = 0;
     private int itemLeft = 0;
     private TextToSpeech tts;
-    private Long startTime, spentTime, minius, seconds, mill;
+    private Long startTime;
     private TextView time;
     private Timer timer;
     private HashMap<String, String> map;
@@ -306,10 +306,6 @@ public abstract class CameraActivity extends AppCompatActivity
             Date resultdate = new Date(spentTime);
             finishTime = sdf.format(resultdate);
             time.setText(sdf.format(resultdate));
-
-            if (!stopTimer) {
-                //timer.cancel();
-            }
             return false;
         }
     });
@@ -748,12 +744,30 @@ public abstract class CameraActivity extends AppCompatActivity
         itemLeft = 2 - completed;
         if (completed == 2) {
             //tts.setPitch(0.8f);
-            tts.setSpeechRate(0.7f);
-            map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
-            tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH,  map);
+            tts.setSpeechRate(0.9f);
+            tts.setLanguage(Locale.ENGLISH);
+            //map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
+
+            Runnable r1 = new Runnable() {
+                @Override
+                public void run() {
+                    tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH,  null , null);
+                    try {
+                        Thread.sleep(3500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    win.start();
+                }
+            };
+
+            Thread t1=new Thread(r1);
+            t1.start();
             timer.cancel();
         }
     }
+
+
 
     protected Model getModel() {
         return model;
