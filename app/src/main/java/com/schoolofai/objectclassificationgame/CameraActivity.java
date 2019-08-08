@@ -153,7 +153,7 @@ public abstract class CameraActivity extends AppCompatActivity
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_camera);
-        win = MediaPlayer.create(CameraActivity.this,R.raw.win);
+        win = MediaPlayer.create(CameraActivity.this,R.raw.victory_music);
         map = new HashMap<String, String>();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
