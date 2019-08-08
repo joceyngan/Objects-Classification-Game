@@ -8,17 +8,15 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/semi_transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="#fff">
         <ImageView
-            android:layout_width="wrap_content"
+            android:foregroundGravity="left"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/treasure_hunt" />
+            android:src="@drawable/school_of_ai" />
     </androidx.appcompat.widget.Toolbar>
 
     <TextView

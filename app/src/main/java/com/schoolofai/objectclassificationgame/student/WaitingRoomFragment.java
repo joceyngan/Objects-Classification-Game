@@ -82,14 +82,21 @@ public class WaitingRoomFragment extends Fragment {
             public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 if (documentSnapshot != null) {
                     currentroom = documentSnapshot.toObject(Room.class);
-                    UpdateReadyNumber();
-                    if (currentroom.getStatus() == 1) {
+                    if (currentroom !=null){
+                        Log.e("currentroom", "not null");
+                        UpdateReadyNumber();
+                        if (currentroom.getStatus() == 1) {
+                            listenerChange.remove();
+                            Intent intent = new Intent(context, ClassifierActivity.class);
+                            intent.putExtra("roomNumber", currentroom.getRoomId());
+                            intent.putExtra("player", player);
+                            startActivity(intent);
+                        }
+                    }else{
                         listenerChange.remove();
-                        Intent intent = new Intent(context, ClassifierActivity.class);
-                        intent.putExtra("roomNumber", currentroom.getRoomId());
-                        intent.putExtra("player", player);
-                        startActivity(intent);
+                        getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
                     }
+
                 }
             }
         });

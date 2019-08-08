@@ -25,11 +25,13 @@
     <LinearLayout
         android:id="@+id/linearLayout9"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
 
+        android:layout_marginBottom="8dp"
         android:background="@drawable/listbackground"
         android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btnReady"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/roomNumberTv">
@@ -42,8 +44,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:padding="16dp"
             android:gravity="center"
+            android:padding="16dp"
             android:text="There are 10 items\nyou need to find."
             android:textColor="#fff"
             android:textSize="36dp" />
@@ -75,8 +77,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="16dp"
                 android:gravity="center"
+                android:padding="16dp"
                 android:text="Ready"
                 android:textColor="#fff"
                 android:textSize="24dp" />
@@ -99,7 +101,6 @@
         android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/buttom"
@@ -109,7 +110,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

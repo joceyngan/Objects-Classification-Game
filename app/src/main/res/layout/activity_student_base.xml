@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:background="@color/semi_transparent">
-
+        android:background="#fff">
         <ImageView
-            android:layout_width="wrap_content"
+            android:foregroundGravity="left"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/treasure_hunt" />
+            android:src="@drawable/school_of_ai" />
     </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout

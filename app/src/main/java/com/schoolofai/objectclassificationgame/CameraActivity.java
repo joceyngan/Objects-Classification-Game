@@ -111,18 +111,17 @@ public abstract class CameraActivity extends AppCompatActivity
     private Animation alpha, rotate;
 
     private BottomSheetBehavior sheetBehavior;
-    protected TextView completedTv, tvWon;
-    protected TextView item1, itemStatus1,
-            item2, itemStatus2,
-            item3, itemStatus3,
-            item4, itemStatus4,
-            item5, itemStatus5,
-            item6, itemStatus6,
-            item7, itemStatus7,
-            item8, itemStatus8,
-            item9, itemStatus9,
-            item10, itemStatus10,
-            itemNow, itemNowStatus;
+    protected TextView completedTv, itemNow, itemNowStatus;
+    protected ImageView item1,
+            item2,
+            item3,
+            item4,
+            item5,
+            item6,
+            item7,
+            item8,
+            item9,
+            item10;
     protected ImageView bottomSheetArrowImageView;
     private String[] allitems = {"mouse",
             "tench",
@@ -183,7 +182,6 @@ public abstract class CameraActivity extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-        tvWon = (TextView) findViewById(R.id.tvWon);
         alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
         alpha.reset();
         rotate = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -192,7 +190,8 @@ public abstract class CameraActivity extends AppCompatActivity
         itemsList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Random random = new Random();
-            String randomString = allitems[random.nextInt(allitems.length)];
+            //String randomString = allitems[random.nextInt(allitems.length)];   //Random Item
+            String randomString = allitems[i];     //Stable 10 Item
             while (true) {
                 if (!itemsList.contains(randomString)) {
                     itemsList.add(randomString);
@@ -305,30 +304,20 @@ public abstract class CameraActivity extends AppCompatActivity
         item8 = findViewById(R.id.item8);
         item9 = findViewById(R.id.item9);
         item10 = findViewById(R.id.item10);
-        itemNow = findViewById(R.id.nowItem);
-        itemStatus1 = findViewById(R.id.item1Status);
-        itemStatus2 = findViewById(R.id.item2Status);
-        itemStatus3 = findViewById(R.id.item3Status);
-        itemStatus4 = findViewById(R.id.item4Status);
-        itemStatus5 = findViewById(R.id.item5Status);
-        itemStatus6 = findViewById(R.id.item6Status);
-        itemStatus7 = findViewById(R.id.item7Status);
-        itemStatus8 = findViewById(R.id.item8Status);
-        itemStatus9 = findViewById(R.id.item9Status);
-        itemStatus10 = findViewById(R.id.item10Status);
-        itemNowStatus = findViewById(R.id.nowItem1Value);
         completedTv = findViewById(R.id.completeStatusValue);
+        itemNow = findViewById(R.id.nowItem);
+        itemNowStatus = findViewById(R.id.nowItem1Value);
 
-        item1.setText(itemsList.get(0));
-        item2.setText(itemsList.get(1));
-        item3.setText(itemsList.get(2));
-        item4.setText(itemsList.get(3));
-        item5.setText(itemsList.get(4));
-        item6.setText(itemsList.get(5));
-        item7.setText(itemsList.get(6));
-        item8.setText(itemsList.get(7));
-        item9.setText(itemsList.get(8));
-        item10.setText(itemsList.get(9));
+        item1.setImageResource(R.drawable.apple1);
+        item2.setImageResource(R.drawable.banana1);
+        item3.setImageResource(R.drawable.carrot1);
+        item4.setImageResource(R.drawable.corn1);
+        item5.setImageResource(R.drawable.grape1);
+        item6.setImageResource(R.drawable.greengrape1);
+        item7.setImageResource(R.drawable.lemon1);
+        item8.setImageResource(R.drawable.orange1);
+        item9.setImageResource(R.drawable.pear1);
+        item10.setImageResource(R.drawable.tomato1);
         time = findViewById(R.id.timerTextView);
 
         timer = new Timer();
@@ -673,44 +662,34 @@ public abstract class CameraActivity extends AppCompatActivity
                         UpdateCompleteStatus(location);
                         switch (location) {
                             case 0:
-                                itemStatus1.setText(R.string.game_completed);
-                                itemStatus1.startAnimation(alpha);
+                                item1.setImageResource(R.drawable.apple3);
                                 break;
                             case 1:
-                                itemStatus2.setText(R.string.game_completed);
-                                itemStatus2.startAnimation(alpha);
+                                item2.setImageResource(R.drawable.banana3);
                                 break;
                             case 2:
-                                itemStatus3.setText(R.string.game_completed);
-                                itemStatus3.startAnimation(alpha);
+                                item3.setImageResource(R.drawable.carrot3);
                                 break;
                             case 3:
-                                itemStatus4.setText(R.string.game_completed);
-                                itemStatus4.startAnimation(alpha);
+                                item4.setImageResource(R.drawable.corn3);
                                 break;
                             case 4:
-                                itemStatus5.setText(R.string.game_completed);
-                                itemStatus5.startAnimation(alpha);
+                                item5.setImageResource(R.drawable.grape3);
                                 break;
                             case 5:
-                                itemStatus6.setText(R.string.game_completed);
-                                itemStatus6.startAnimation(alpha);
+                                item6.setImageResource(R.drawable.greengrape3);
                                 break;
                             case 6:
-                                itemStatus7.setText(R.string.game_completed);
-                                itemStatus7.startAnimation(alpha);
+                                item7.setImageResource(R.drawable.lemon3);
                                 break;
                             case 7:
-                                itemStatus8.setText(R.string.game_completed);
-                                itemStatus8.startAnimation(alpha);
+                                item8.setImageResource(R.drawable.orange3);
                                 break;
                             case 8:
-                                itemStatus9.setText(R.string.game_completed);
-                                itemStatus9.startAnimation(alpha);
+                                item9.setImageResource(R.drawable.pear3);
                                 break;
                             case 9:
-                                itemStatus10.setText(R.string.game_completed);
-                                itemStatus10.startAnimation(alpha);
+                                item10.setImageResource(R.drawable.tomato3);
                                 break;
                         }
                     }
@@ -742,16 +721,6 @@ public abstract class CameraActivity extends AppCompatActivity
 
         completedTv.setText(completed + " / 10");
         itemLeft = 2 - completed;
-        if (itemLeft == 0) {
-            tvWon.setText("Congratulations!\n You have completed this game!");
-            tvWon.startAnimation(rotate);
-        } else if (itemLeft == 1) {
-            tvWon.setText(itemLeft + " item left...");
-            tvWon.startAnimation(alpha);
-        } else {
-            tvWon.setText(itemLeft + " items left...");
-            tvWon.startAnimation(alpha);
-        }
         if (completed == 2) {
             //tts.setPitch(0.8f);
             tts.setSpeechRate(0.8f);
