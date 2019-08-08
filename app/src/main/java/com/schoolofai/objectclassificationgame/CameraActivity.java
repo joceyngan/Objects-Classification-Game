@@ -39,6 +39,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Trace;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -52,6 +53,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import 	android.media.MediaPlayer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -86,6 +88,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.HashMap;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -112,6 +115,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private LinearLayout gestureLayout;
     private boolean stopTimer = false;
     private Animation alpha, rotate;
+    private MediaPlayer win;
 
     private BottomSheetBehavior sheetBehavior;
     protected TextView completedTv, itemNow, itemNowStatus;
@@ -149,6 +153,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private Long startTime, spentTime, minius, seconds, mill;
     private TextView time;
     private Timer timer;
+    private HashMap<String, String> map;
 
     private Player player;
     private String finishTime;
@@ -163,6 +168,8 @@ public abstract class CameraActivity extends AppCompatActivity
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_camera);
+        win = MediaPlayer.create(CameraActivity.this,R.raw.victory_music);
+        map = new HashMap<String, String>();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -215,8 +222,25 @@ public abstract class CameraActivity extends AppCompatActivity
         tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
+                if(i == TextToSpeech.SUCCESS) {
+                    tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                        @Override
+                        public void onDone(String utteranceId) {
+                           // Log.d("done music","done music");
+                            win.start();
+                        }
+                        @Override
+                        public void onError(String utteranceId) {
+                        }
 
+                        @Override
+                        public void onStart(String utteranceId) {
+                            win.prepareAsync();
+                        }
+                    });
             }
+            }
+
         });
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
@@ -724,8 +748,9 @@ public abstract class CameraActivity extends AppCompatActivity
         itemLeft = 2 - completed;
         if (completed == 2) {
             //tts.setPitch(0.8f);
-            tts.setSpeechRate(0.8f);
-            tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH, null, null);
+            tts.setSpeechRate(0.7f);
+            map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
+            tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH,  map);
             timer.cancel();
         }
     }
