@@ -7,6 +7,8 @@
             android:id="@+id/tvTeamName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/buttonTextColor"
+            android:textSize="20sp"
             android:gravity="center"
             android:layout_weight="1"/>
 
@@ -14,6 +16,8 @@
             android:id="@+id/tvCompleted"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/buttonTextColor"
+            android:textSize="20sp"
             android:gravity="center"
             android:layout_weight="1"/>
 
@@ -21,6 +25,8 @@
             android:id="@+id/tvStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/buttonTextColor"
+            android:textSize="20sp"
             android:gravity="center"
             android:layout_weight="1"/>
 

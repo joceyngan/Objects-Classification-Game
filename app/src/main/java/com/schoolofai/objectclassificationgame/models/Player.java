@@ -10,7 +10,7 @@ public class Player implements Parcelable {
     private String playerName;
     private int completedItem;
     private int status;
-    private String completedTime;
+    private String completedTime = "99:99.999";
 
     public String getPlayerUid() {
         return playerUid;

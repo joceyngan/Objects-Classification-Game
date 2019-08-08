@@ -77,6 +77,7 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
                 buttonStart.setVisibility(View.GONE);
                 buttonLeaveRoom.setVisibility(View.VISIBLE);
                 listenerChange.remove();
+                room.UpdateAllPlayerStatus(3);
                 room.setStatus(1);
                 db.collection("rooms").document(roomNum).set(room, SetOptions.merge());
                 getSupportFragmentManager().beginTransaction().replace(R.id.tutorFragmentView, new PlayingRoomFragment()).commit();

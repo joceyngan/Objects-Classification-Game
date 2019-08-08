@@ -20,6 +20,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
@@ -55,6 +56,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -73,6 +75,7 @@ import com.schoolofai.objectclassificationgame.tflite.Classifier.Device;
 import com.schoolofai.objectclassificationgame.tflite.Classifier.Items;
 import com.schoolofai.objectclassificationgame.tflite.Classifier.Model;
 import com.schoolofai.objectclassificationgame.tflite.Classifier.Recognition;
+import com.schoolofai.objectclassificationgame.tutor.tutorWelcome;
 
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -274,15 +277,9 @@ public abstract class CameraActivity extends AppCompatActivity
     private Handler timerHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            //Log.e("Handler", "callbackHandler msg.what:" + msg.what);
             Long spentTime = System.currentTimeMillis() - startTime;
-            Long minius = (spentTime / 1000) / 60;
-            Long seconds = (spentTime / 1000) % 60;
-            Long mill = spentTime;
-
             SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
             Date resultdate = new Date(spentTime);
-            //System.out.println(sdf.format(resultdate));
             finishTime = sdf.format(resultdate);
             time.setText(sdf.format(resultdate));
 
@@ -712,8 +709,12 @@ public abstract class CameraActivity extends AppCompatActivity
             public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
                 DocumentSnapshot documentSnapshot = transaction.get(documentReference);
                 Room room = documentSnapshot.toObject(Room.class);
+                Log.e("UID", player.getPlayerUid());
                 room.UpdateCompleted(player.getPlayerUid(), completed);
-                room.UpdateCompleteTime(player.getPlayerUid(), finishTime);
+                if (completed==2){
+                    room.UpdateCompleteTime(player.getPlayerUid(), finishTime);
+                    room.UpdateStatus(player.getPlayerUid(), 2);
+                }
                 transaction.set(documentReference, room);
                 return null;
             }
@@ -763,5 +764,19 @@ public abstract class CameraActivity extends AppCompatActivity
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // Do nothing.
+    }
+
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Warning!")
+                .setMessage("Are you sure want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        CameraActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 }

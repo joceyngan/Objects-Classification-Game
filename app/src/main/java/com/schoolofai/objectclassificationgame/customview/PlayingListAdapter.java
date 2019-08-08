@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.schoolofai.objectclassificationgame.R;
 import com.schoolofai.objectclassificationgame.models.Player;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class PlayingListAdapter extends ArrayAdapter<Player> {
@@ -24,7 +25,7 @@ public class PlayingListAdapter extends ArrayAdapter<Player> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
+        playerList.sort(Comparator.comparing(Player::getCompletedTime));
         View listItem = convertView;
         Player player = playerList.get(position);
 
@@ -34,6 +35,8 @@ public class PlayingListAdapter extends ArrayAdapter<Player> {
         TextView tvTeamName = listItem.findViewById(R.id.tvTeamName);
         TextView tvCompleted = listItem.findViewById(R.id.tvCompleted);
         TextView tvStatus = listItem.findViewById(R.id.tvStatus);
+
+
 
         tvCompleted.setText(player.getCompletedItem() + " / 10");
         tvTeamName.setText(player.getPlayerName());
@@ -45,7 +48,8 @@ public class PlayingListAdapter extends ArrayAdapter<Player> {
                 tvStatus.setText("Ready");
                 break;
             case 2:
-                tvStatus.setText("Status: Completed");
+                tvCompleted.setText("Completed");
+                tvStatus.setText(player.getCompletedTime());
                 break;
             case 3:
                 tvStatus.setText("Playing");

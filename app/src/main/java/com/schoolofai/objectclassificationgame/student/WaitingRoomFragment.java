@@ -9,12 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.CountDownTimer;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -32,22 +34,28 @@ import com.schoolofai.objectclassificationgame.models.Player;
 import com.schoolofai.objectclassificationgame.models.Room;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.schoolofai.objectclassificationgame.student.studentBase.currentroom;
 import static com.schoolofai.objectclassificationgame.student.studentBase.player;
 
 public class WaitingRoomFragment extends Fragment {
-    TextView tvRoomNumber;
-    TextView tvRuleOne;
-    TextView tvStatus;
-    Button btnReady;
+    private TextView tvRoomNumber;
+    private TextView tvRuleOne;
+    private TextView tvStatus;
+    private Button btnReady;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference documentReference;
     private ListenerRegistration listenerChange;
     private Context context;
+    private LinearLayout linearLayout, countTimeLayout;
+    private TextView countTime;
 
-    int readyNumber;
+    private int readyNumber;
+
+    private Timer timer;
 
     public WaitingRoomFragment() {
         // Required empty public constructor
@@ -68,6 +76,9 @@ public class WaitingRoomFragment extends Fragment {
         tvRoomNumber = view.findViewById(R.id.roomNumberTv);
         tvRuleOne = view.findViewById(R.id.ruleOneTv);
         tvStatus = view.findViewById(R.id.readyStatustv);
+        linearLayout = view.findViewById(R.id.linearLayout9);
+        countTimeLayout = view.findViewById(R.id.countTimeLayout);
+        countTime = view.findViewById(R.id.countTimeTv);
 
         tvRoomNumber.setText("Room Number " + currentroom.getRoomId());
         String numberString = getColoredSpanned("10", "#4f8f00");
@@ -87,10 +98,35 @@ public class WaitingRoomFragment extends Fragment {
                         UpdateReadyNumber();
                         if (currentroom.getStatus() == 1) {
                             listenerChange.remove();
-                            Intent intent = new Intent(context, ClassifierActivity.class);
-                            intent.putExtra("roomNumber", currentroom.getRoomId());
-                            intent.putExtra("player", player);
-                            startActivity(intent);
+                            linearLayout.setVisibility(View.GONE);
+                            btnReady.setVisibility(View.GONE);
+                            tvRoomNumber.setVisibility(View.GONE);
+                            countTimeLayout.setVisibility(View.VISIBLE);
+                            countTime.setText("3");
+                            new CountDownTimer(4000, 100) {
+
+                                public void onTick(long millisUntilFinished) {
+                                    if (millisUntilFinished < 1000){
+                                        countTime.setText("GO");
+                                    }else if(millisUntilFinished < 2000){
+                                        countTime.setText("1");
+                                    }else if (millisUntilFinished < 3000){
+                                        countTime.setText("2");
+                                    }else {
+                                        countTime.setText("3");
+                                    }
+                                }
+
+                                public void onFinish() {
+                                    Intent intent = new Intent(context, ClassifierActivity.class);
+                                    intent.putExtra("roomNumber", currentroom.getRoomId());
+                                    intent.putExtra("player", player);
+                                    startActivity(intent);
+                                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
+                                }
+                            }.start();
+
+
                         }
                     }else{
                         listenerChange.remove();
@@ -121,6 +157,8 @@ public class WaitingRoomFragment extends Fragment {
 
 
     }
+
+
 
     private void UpdateReadyNumber() {
         List<Player> playerlist = currentroom.getPlayers();

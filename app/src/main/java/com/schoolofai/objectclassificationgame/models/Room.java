@@ -45,6 +45,12 @@ public class Room {
         players.set(Integer.parseInt(uid), playertmp);
     }
 
+    public void UpdateAllPlayerStatus(int status){
+        for (Player player: players){
+            player.setStatus(status);
+        }
+    }
+
     public void UpdateCompleted(String uid, int completed){
         Player playertmp = players.get(Integer.parseInt(uid));
         playertmp.setCompletedItem(completed);

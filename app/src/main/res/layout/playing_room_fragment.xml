@@ -3,6 +3,7 @@
     android:id="@+id/linearLayout5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/buttom"
     android:orientation="vertical">
 
     <LinearLayout
@@ -15,6 +16,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#fff"
+            android:textSize="20sp"
             android:gravity="center"
             android:text="Name" />
 
@@ -23,6 +26,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+
+            android:textColor="#fff"
+            android:textSize="20sp"
             android:gravity="center"
             android:text="Completed" />
 
@@ -31,6 +37,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#fff"
+            android:textSize="20sp"
             android:gravity="center"
             android:text="Time" />
     </LinearLayout>

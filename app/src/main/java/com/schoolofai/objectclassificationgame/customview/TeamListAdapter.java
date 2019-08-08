@@ -34,9 +34,6 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
 
         TextView tvTeamName = listItem.findViewById(R.id.tvTeamName);
         TextView tvStatus = listItem.findViewById(R.id.tvStatus);
-        if ((position +1 ) % 2 == 0){
-            listItem.setBackgroundColor(Color.parseColor("#f2f1ef"));
-        }
 
         tvTeamName.setText(player.getPlayerName());
         switch (player.getStatus()){

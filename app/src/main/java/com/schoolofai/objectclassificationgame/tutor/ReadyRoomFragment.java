@@ -63,7 +63,7 @@ public class ReadyRoomFragment extends Fragment {
             @Override
             public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 if (e != null){
-                    Log.e("Listener Error", "34, ", e );
+                    Log.e("Listener Error", "", e );
                     return;
                 }
                 room = documentSnapshot.toObject(Room.class);
