@@ -104,12 +104,21 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onStop() {
+
+        Log.e("Stop", "Stop");
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
+        super.onDestroy();
         db.collection("rooms").document(roomNum).delete();
+        Log.e("onDestroy", "onDestroy");
         if (listenerChange !=null){
             listenerChange.remove();
         }
         room = null;
-        super.onDestroy();
+
     }
 }

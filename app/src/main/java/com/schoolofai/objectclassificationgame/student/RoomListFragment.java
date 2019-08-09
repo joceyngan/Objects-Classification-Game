@@ -112,7 +112,7 @@ public class RoomListFragment extends Fragment {
                     playerList = roomtmp.getPlayers();
                 }
                 Log.e("Playerlist1", Integer.toString(playerList.size()));
-                if (playerList.size() < 4){
+                if (playerList.size() < 4 && roomtmp.getStatus() == 0){
                     Log.e("Playerlist2", Integer.toString(playerList.size()));
                     player.setPlayerUid(Integer.toString(playerList.size()));
                     playerList.add(player);
