@@ -832,6 +832,17 @@ public abstract class CameraActivity extends AppCompatActivity
         itemLeft = 10 - completed;
         if (completed == 10) {
             //tts.setPitch(0.8f);
+            new AlertDialog.Builder(this)
+                    .setTitle("Congratulation!")
+                    .setMessage("You have completed the game in " + finishTime)
+                    .setCancelable(false)
+                    .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            CameraActivity.super.onBackPressed();
+                        }
+                    })
+                    .show();
+
             tts.setSpeechRate(0.9f);
             tts.setLanguage(Locale.ENGLISH);
             //map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
@@ -894,12 +905,28 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     public void onBackPressed() {
+
         new AlertDialog.Builder(this)
                 .setTitle("Warning!")
                 .setMessage("Are you sure want to exit?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        if (roomNumber != null){
+                            documentReference = db.collection("rooms").document(roomNumber);
+                            db.runTransaction(new Transaction.Function<Void>() {
+                                @Nullable
+                                @Override
+                                public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                                    DocumentSnapshot documentSnapshot = transaction.get(documentReference);
+                                    Room room = documentSnapshot.toObject(Room.class);
+                                    room.UpdateCompleted(player.getPlayerUid(), completed);
+                                    room.UpdateStatus(player.getPlayerUid(), 4);
+                                    transaction.set(documentReference, room);
+                                    return null;
+                                }
+                            });
+                        }
                         CameraActivity.super.onBackPressed();
                     }
                 })

@@ -17,7 +17,5 @@ public class studentBase extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_base);
         getSupportFragmentManager().beginTransaction().add(R.id.studentFragmentLayout, new EnterTeamNameFragment()).commit();
-
-
     }
 }

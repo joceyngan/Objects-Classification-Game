@@ -76,7 +76,7 @@
             android:id="@+id/buttonLeaveRoom"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:text="LeaveRoom"
+            android:text="Leave Room"
             android:visibility="gone"
             android:background="@drawable/buttom"
             android:textColor="@color/buttonTextColor"
