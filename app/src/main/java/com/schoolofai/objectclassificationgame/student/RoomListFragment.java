@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -50,6 +51,8 @@ public class RoomListFragment extends Fragment {
     private DocumentReference documentReference;
     private ListenerRegistration listenerChange;
 
+    private Button btnSinglePlay;
+
     private Context context;
 
     @Override
@@ -84,6 +87,16 @@ public class RoomListFragment extends Fragment {
                     roomListAdapter = new RoomListAdapter(view.getContext(), roomlist);
                     listView.setAdapter(roomListAdapter);
                 }
+            }
+        });
+        btnSinglePlay = view.findViewById(R.id.btnSinglePlay);
+        btnSinglePlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ClassifierActivity.class);
+                intent.putExtra("roomNumber", currentroom.getRoomId());
+                intent.putExtra("player", player);
+                startActivity(intent);
             }
         });
 

@@ -83,6 +83,8 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
                 getSupportFragmentManager().beginTransaction().replace(R.id.tutorFragmentView, new PlayingRoomFragment()).commit();
                 break;
             case R.id.buttonLeaveRoom:
+                Log.e("buttonLeave", "Clicked");
+                onBackPressed();
                 break;
         }
     }
