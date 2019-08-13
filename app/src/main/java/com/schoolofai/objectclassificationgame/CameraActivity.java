@@ -130,21 +130,21 @@ public abstract class CameraActivity extends AppCompatActivity
             item9,
             item10;
     protected ImageView bottomSheetArrowImageView;
-    private String[] allitems = {"mouse",
-            "tench",
-            "goldfish",
-            "great white shark",
-            "tiger shark",
-            "hammerhead",
-            "electric ray",
-            "computer keyboard",
-            "cock",
-            "hen"};
+    private String[] allitems = {"Apple",
+            "Banana",
+            "Carrot",
+            "Corn",
+            "Grape",
+            "GreenGrape",
+            "Lemon",
+            "Orange",
+            "Pear",
+            "Tomato"};
 
     private ArrayList<String> itemsList;
     private ArrayList<Items> items;
 
-    private Model model = Model.QUANTIZED;
+    private Model model = Model.FLOAT;
     private Device device = Device.CPU;
     private int numThreads = -1;
     private int completed = 0;
@@ -152,7 +152,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private TextToSpeech tts;
     private Long startTime;
     private TextView time;
-    private Timer timer;
+    private Timer timer, checker;
     private HashMap<String, String> map;
 
     private Player player;
@@ -289,6 +289,89 @@ public abstract class CameraActivity extends AppCompatActivity
         numThreads = 1;
     }
 
+    private int currentItem = 999;
+    private int checkValue[] = new int[3];
+    private int checkInt = 0;
+    private boolean checkAllSame = false;
+
+    private void setupChecker(){
+        checker.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                checkValue[checkInt] = currentItem;
+                if (currentItem != 999){
+                    while (true){
+                        for (int checkValue : checkValue){
+                            if (checkValue != currentItem){
+                                checkAllSame = false;
+                                break;
+                            }else{
+                                checkAllSame = true;
+                            }
+                        }
+                        break;
+                    }
+                }else{
+                    checkAllSame = false;
+                }
+
+                Log.e("Checker", "C Item: " + currentItem + "\t\tFound? " + checkAllSame);
+                Log.e("Checker" , "Item 1: " + checkValue[0]);
+                Log.e("Checker" , "Item 2: " + checkValue[1]);
+                Log.e("Checker" , "Item 3: " + checkValue[2]);
+                if (checkAllSame && currentItem != 999){
+                    Log.e("Updated", "Item is complete: " + checkValue[checkInt]);
+                    checkerHandler.sendEmptyMessage(checkValue[checkInt]);
+                }
+
+                checkInt ++;
+                if (checkInt > 2){
+                    checkInt = 0;
+                }
+            }
+        },1000, 1000);
+    }
+
+    private Handler checkerHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            UpdateCompleteStatus(msg.what - 1);
+            switch (msg.what) {
+                case 1:
+                    item1.setImageResource(R.drawable.apple3);
+                    break;
+                case 2:
+                    item2.setImageResource(R.drawable.banana3);
+                    break;
+                case 3:
+                    item3.setImageResource(R.drawable.carrot3);
+                    break;
+                case 4:
+                    item4.setImageResource(R.drawable.corn3);
+                    break;
+                case 5:
+                    item5.setImageResource(R.drawable.grape3);
+                    break;
+                case 6:
+                    item6.setImageResource(R.drawable.greengrape3);
+                    break;
+                case 7:
+                    item7.setImageResource(R.drawable.lemon3);
+                    break;
+                case 8:
+                    item8.setImageResource(R.drawable.orange3);
+                    break;
+                case 9:
+                    item9.setImageResource(R.drawable.pear3);
+                    break;
+                case 10:
+                    item10.setImageResource(R.drawable.tomato3);
+                    break;
+            }
+            return false;
+        }
+    });
+
     private void setupTimer() {
         timer.schedule(new TimerTask() {
             @Override
@@ -338,7 +421,9 @@ public abstract class CameraActivity extends AppCompatActivity
         time = findViewById(R.id.timerTextView);
 
         timer = new Timer();
+        checker = new Timer();
         setupTimer();
+        setupChecker();
     }
 
     protected int[] getRgbBytes() {
@@ -503,6 +588,7 @@ public abstract class CameraActivity extends AppCompatActivity
         LOGGER.d("onDestroy " + this);
         Log.e("Destory", this.toString());
         timer.cancel();
+        checker.cancel();
         super.onDestroy();
     }
 
@@ -673,42 +759,42 @@ public abstract class CameraActivity extends AppCompatActivity
                 if (itemsList.contains(recognition.getTitle())) {
                     itemNow.setText(recognition.getTitle());
                     itemNowStatus.setText(String.format("%.2f", 100 * recognition.getConfidence()) + "%");
-                    //Log.e("Testing Classification:", recognition.getTitle() + recognition.getConfidence());
                     int location = itemsList.indexOf(recognition.getTitle());
-                    if (!items.get(location).isStatus() && recognition.getConfidence() > 0.7f) {
-                        UpdateCompleteStatus(location);
+                    if (!items.get(location).isStatus() && recognition.getConfidence() > 0.98f) {
                         switch (location) {
                             case 0:
-                                item1.setImageResource(R.drawable.apple3);
+                                currentItem = 1;
                                 break;
                             case 1:
-                                item2.setImageResource(R.drawable.banana3);
+                                currentItem = 2;
                                 break;
                             case 2:
-                                item3.setImageResource(R.drawable.carrot3);
+                                currentItem = 3;
                                 break;
                             case 3:
-                                item4.setImageResource(R.drawable.corn3);
+                                currentItem = 4;
                                 break;
                             case 4:
-                                item5.setImageResource(R.drawable.grape3);
+                                currentItem = 5;
                                 break;
                             case 5:
-                                item6.setImageResource(R.drawable.greengrape3);
+                                currentItem = 6;
                                 break;
                             case 6:
-                                item7.setImageResource(R.drawable.lemon3);
+                                currentItem = 7;
                                 break;
                             case 7:
-                                item8.setImageResource(R.drawable.orange3);
+                                currentItem = 8;
                                 break;
                             case 8:
-                                item9.setImageResource(R.drawable.pear3);
+                                currentItem = 9;
                                 break;
                             case 9:
-                                item10.setImageResource(R.drawable.tomato3);
+                                currentItem = 10;
                                 break;
                         }
+                    }else{
+                        currentItem = 999;
                     }
                 } else {
                     itemNow.setText("Unknown");
@@ -722,28 +808,41 @@ public abstract class CameraActivity extends AppCompatActivity
         items.get(location).setStatus(true);
         completed += 1;
         player.setCompletedItem(completed);
-        documentReference = db.collection("rooms").document(roomNumber);
-        db.runTransaction(new Transaction.Function<Void>() {
-            @Nullable
-            @Override
-            public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                DocumentSnapshot documentSnapshot = transaction.get(documentReference);
-                Room room = documentSnapshot.toObject(Room.class);
-                Log.e("UID", player.getPlayerUid());
-                room.UpdateCompleted(player.getPlayerUid(), completed);
-                if (completed==2){
-                    room.UpdateCompleteTime(player.getPlayerUid(), finishTime);
-                    room.UpdateStatus(player.getPlayerUid(), 2);
+        if (roomNumber != null){
+            documentReference = db.collection("rooms").document(roomNumber);
+            db.runTransaction(new Transaction.Function<Void>() {
+                @Nullable
+                @Override
+                public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                    DocumentSnapshot documentSnapshot = transaction.get(documentReference);
+                    Room room = documentSnapshot.toObject(Room.class);
+                    Log.e("UID", player.getPlayerUid());
+                    room.UpdateCompleted(player.getPlayerUid(), completed);
+                    if (completed==10){
+                        room.UpdateCompleteTime(player.getPlayerUid(), finishTime);
+                        room.UpdateStatus(player.getPlayerUid(), 2);
+                    }
+                    transaction.set(documentReference, room);
+                    return null;
                 }
-                transaction.set(documentReference, room);
-                return null;
-            }
-        });
+            });
+        }
 
         completedTv.setText(completed + " / 10");
-        itemLeft = 2 - completed;
-        if (completed == 2) {
+        itemLeft = 10 - completed;
+        if (completed == 10) {
             //tts.setPitch(0.8f);
+            new AlertDialog.Builder(this)
+                    .setTitle("Congratulation!")
+                    .setMessage("You have completed the game in " + finishTime)
+                    .setCancelable(false)
+                    .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            CameraActivity.super.onBackPressed();
+                        }
+                    })
+                    .show();
+
             tts.setSpeechRate(0.9f);
             tts.setLanguage(Locale.ENGLISH);
             //map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
@@ -806,12 +905,28 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     public void onBackPressed() {
+
         new AlertDialog.Builder(this)
                 .setTitle("Warning!")
                 .setMessage("Are you sure want to exit?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        if (roomNumber != null){
+                            documentReference = db.collection("rooms").document(roomNumber);
+                            db.runTransaction(new Transaction.Function<Void>() {
+                                @Nullable
+                                @Override
+                                public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                                    DocumentSnapshot documentSnapshot = transaction.get(documentReference);
+                                    Room room = documentSnapshot.toObject(Room.class);
+                                    room.UpdateCompleted(player.getPlayerUid(), completed);
+                                    room.UpdateStatus(player.getPlayerUid(), 4);
+                                    transaction.set(documentReference, room);
+                                    return null;
+                                }
+                            });
+                        }
                         CameraActivity.super.onBackPressed();
                     }
                 })
