@@ -149,7 +149,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private int numThreads = -1;
     private int completed = 0;
     private int itemLeft = 0;
-    private TextToSpeech tts;
+    private TextToSpeech tts,tts1;
     private Long startTime;
     private TextView time;
     private Timer timer, checker;
@@ -158,6 +158,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private Player player;
     private String finishTime;
     private String roomNumber;
+    private String objectText="";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference documentReference;
 
@@ -242,6 +243,16 @@ public abstract class CameraActivity extends AppCompatActivity
             }
 
         });
+
+        tts1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+            }
+
+        });
+        tts1.setSpeechRate(0.8f);
+        tts1.setLanguage(Locale.ENGLISH);
+
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -335,42 +346,78 @@ public abstract class CameraActivity extends AppCompatActivity
     private Handler checkerHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            UpdateCompleteStatus(msg.what - 1);
             switch (msg.what) {
                 case 1:
+                    objectText = "apple";
+                    saidObject();
                     item1.setImageResource(R.drawable.apple3);
                     break;
                 case 2:
+                    objectText = "banana";
+                    saidObject();
                     item2.setImageResource(R.drawable.banana3);
                     break;
                 case 3:
+                    objectText = "carrot";
+                    saidObject();
                     item3.setImageResource(R.drawable.carrot3);
                     break;
                 case 4:
+                    objectText = "corn";
+                    saidObject();
                     item4.setImageResource(R.drawable.corn3);
                     break;
                 case 5:
+                    objectText = "grape";
+                    saidObject();
                     item5.setImageResource(R.drawable.grape3);
                     break;
                 case 6:
+                    objectText = "green grape";
+                    saidObject();
                     item6.setImageResource(R.drawable.greengrape3);
                     break;
                 case 7:
+                    objectText = "lemon";
+                    saidObject();
                     item7.setImageResource(R.drawable.lemon3);
                     break;
                 case 8:
+                    objectText = "orange";
+                    saidObject();
                     item8.setImageResource(R.drawable.orange3);
                     break;
                 case 9:
+                    objectText = "pear";
+                    saidObject();
                     item9.setImageResource(R.drawable.pear3);
                     break;
                 case 10:
+                    objectText = "tomato";
+                    saidObject();
                     item10.setImageResource(R.drawable.tomato3);
                     break;
             }
+            UpdateCompleteStatus(msg.what - 1);
             return false;
         }
     });
+
+    private void saidObject(){
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                tts1.speak(objectText, TextToSpeech.QUEUE_FLUSH,  null , null);
+                try {
+                    Thread.sleep(3500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Thread t=new Thread(r);
+        t.start();
+    }
 
     private void setupTimer() {
         timer.schedule(new TimerTask() {
