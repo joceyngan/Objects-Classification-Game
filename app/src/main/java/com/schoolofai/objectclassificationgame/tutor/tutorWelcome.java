@@ -37,6 +37,7 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
         initView();
         initListener();
         room = new Room();
+        startService(new Intent(this, DeleteRoomOnQuit.class));
 
         getSupportFragmentManager().beginTransaction().add(R.id.tutorFragmentView, new RoomNumberFragment()).commit();
     }
@@ -114,11 +115,10 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         db.collection("rooms").document(roomNum).delete();
-        Log.e("onDestroy", "onDestroy");
+        Log.e("Welcome onDestroy", "onDestroy");
         if (listenerChange !=null){
             listenerChange.remove();
         }
         room = null;
-
     }
 }
