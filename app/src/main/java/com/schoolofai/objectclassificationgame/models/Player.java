@@ -66,6 +66,10 @@ public class Player implements Parcelable {
         this.status = Integer.parseInt(data[3]);
     }
 
+    public Player(String name){
+        this.playerName = name;
+    }
+
     @Override
     public int describeContents() {
         return 0;
