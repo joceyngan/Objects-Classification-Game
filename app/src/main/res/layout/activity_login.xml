@@ -17,7 +17,12 @@
             android:src="@drawable/school_of_ai" />
     </androidx.appcompat.widget.Toolbar>
 
-
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:src="@drawable/brain"
+        />
     <TextView
         android:id="@+id/textView9"
         android:layout_width="match_parent"
