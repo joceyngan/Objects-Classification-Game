@@ -53,7 +53,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import 	android.media.MediaPlayer;
+import android.media.MediaPlayer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -149,7 +149,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private int numThreads = -1;
     private int completed = 0;
     private int itemLeft = 0;
-    private TextToSpeech tts,tts1;
+    private TextToSpeech tts, tts1;
     private Long startTime;
     private TextView time;
     private Timer timer, checker;
@@ -158,7 +158,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private Player player;
     private String finishTime;
     private String roomNumber;
-    private String objectText="";
+    private String objectText = "";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference documentReference;
 
@@ -169,7 +169,7 @@ public abstract class CameraActivity extends AppCompatActivity
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_camera);
-        win = MediaPlayer.create(CameraActivity.this,R.raw.victory_music);
+        win = MediaPlayer.create(CameraActivity.this, R.raw.victory_music);
         map = new HashMap<String, String>();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -223,13 +223,16 @@ public abstract class CameraActivity extends AppCompatActivity
         tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                if(i == TextToSpeech.SUCCESS) {
+                if (i == TextToSpeech.SUCCESS) {
+                    tts.setSpeechRate(0.9f);
+                    tts1.setLanguage(Locale.ENGLISH);
                     tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                         @Override
                         public void onDone(String utteranceId) {
-                           // Log.d("done music","done music");
+                            // Log.d("done music","done music");
                             win.start();
                         }
+
                         @Override
                         public void onError(String utteranceId) {
                         }
@@ -239,19 +242,20 @@ public abstract class CameraActivity extends AppCompatActivity
                             win.prepareAsync();
                         }
                     });
+                }
             }
-            }
-
         });
 
         tts1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
+                if (i == TextToSpeech.SUCCESS) {
+                    tts1.setSpeechRate(0.8f);
+                    tts1.setLanguage(Locale.ENGLISH);
+                }
             }
-
         });
-        tts1.setSpeechRate(0.8f);
-        tts1.setLanguage(Locale.ENGLISH);
+
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
@@ -305,42 +309,42 @@ public abstract class CameraActivity extends AppCompatActivity
     private int checkInt = 0;
     private boolean checkAllSame = false;
 
-    private void setupChecker(){
+    private void setupChecker() {
         checker.schedule(new TimerTask() {
             @Override
             public void run() {
                 checkValue[checkInt] = currentItem;
-                if (currentItem != 999){
-                    while (true){
-                        for (int checkValue : checkValue){
-                            if (checkValue != currentItem){
+                if (currentItem != 999) {
+                    while (true) {
+                        for (int checkValue : checkValue) {
+                            if (checkValue != currentItem) {
                                 checkAllSame = false;
                                 break;
-                            }else{
+                            } else {
                                 checkAllSame = true;
                             }
                         }
                         break;
                     }
-                }else{
+                } else {
                     checkAllSame = false;
                 }
 
                 Log.e("Checker", "C Item: " + currentItem + "\t\tFound? " + checkAllSame);
-                Log.e("Checker" , "Item 1: " + checkValue[0]);
-                Log.e("Checker" , "Item 2: " + checkValue[1]);
-                Log.e("Checker" , "Item 3: " + checkValue[2]);
-                if (checkAllSame && currentItem != 999){
+                Log.e("Checker", "Item 1: " + checkValue[0]);
+                Log.e("Checker", "Item 2: " + checkValue[1]);
+                Log.e("Checker", "Item 3: " + checkValue[2]);
+                if (checkAllSame && currentItem != 999) {
                     Log.e("Updated", "Item is complete: " + checkValue[checkInt]);
                     checkerHandler.sendEmptyMessage(checkValue[checkInt]);
                 }
 
-                checkInt ++;
-                if (checkInt > 2){
+                checkInt++;
+                if (checkInt > 2) {
                     checkInt = 0;
                 }
             }
-        },1000, 1000);
+        }, 1000, 1000);
     }
 
     private Handler checkerHandler = new Handler(new Handler.Callback() {
@@ -403,20 +407,8 @@ public abstract class CameraActivity extends AppCompatActivity
         }
     });
 
-    private void saidObject(){
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                tts1.speak(objectText, TextToSpeech.QUEUE_FLUSH,  null , null);
-                try {
-                    Thread.sleep(3500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Thread t=new Thread(r);
-        t.start();
+    private void saidObject() {
+        tts1.speak(objectText, TextToSpeech.QUEUE_FLUSH, null, null);
     }
 
     private void setupTimer() {
@@ -840,7 +832,7 @@ public abstract class CameraActivity extends AppCompatActivity
                                 currentItem = 10;
                                 break;
                         }
-                    }else{
+                    } else {
                         currentItem = 999;
                     }
                 } else {
@@ -855,7 +847,7 @@ public abstract class CameraActivity extends AppCompatActivity
         items.get(location).setStatus(true);
         completed += 1;
         player.setCompletedItem(completed);
-        if (roomNumber != null){
+        if (roomNumber != null) {
             documentReference = db.collection("rooms").document(roomNumber);
             db.runTransaction(new Transaction.Function<Void>() {
                 @Nullable
@@ -865,7 +857,7 @@ public abstract class CameraActivity extends AppCompatActivity
                     Room room = documentSnapshot.toObject(Room.class);
                     Log.e("UID", player.getPlayerUid());
                     room.UpdateCompleted(player.getPlayerUid(), completed);
-                    if (completed==10){
+                    if (completed == 10) {
                         room.UpdateCompleteTime(player.getPlayerUid(), finishTime);
                         room.UpdateStatus(player.getPlayerUid(), 2);
                     }
@@ -890,14 +882,13 @@ public abstract class CameraActivity extends AppCompatActivity
                     })
                     .show();
 
-            tts.setSpeechRate(0.9f);
-            tts.setLanguage(Locale.ENGLISH);
+
             //map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
 
             Runnable r1 = new Runnable() {
                 @Override
                 public void run() {
-                    tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH,  null , null);
+                    tts.speak("Team is completed all tasks", TextToSpeech.QUEUE_FLUSH, null, null);
                     try {
                         Thread.sleep(3500);
                     } catch (InterruptedException e) {
@@ -907,12 +898,11 @@ public abstract class CameraActivity extends AppCompatActivity
                 }
             };
 
-            Thread t1=new Thread(r1);
+            Thread t1 = new Thread(r1);
             t1.start();
             timer.cancel();
         }
     }
-
 
 
     protected Model getModel() {
@@ -959,7 +949,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (roomNumber != null){
+                        if (roomNumber != null) {
                             documentReference = db.collection("rooms").document(roomNumber);
                             db.runTransaction(new Transaction.Function<Void>() {
                                 @Nullable
