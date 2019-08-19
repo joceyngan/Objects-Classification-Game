@@ -166,20 +166,30 @@ public class tutorWelcome extends AppCompatActivity implements View.OnClickListe
                 });
                 break;
             case R.id.deleteAllRoom:
-                db.collection("rooms").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        WriteBatch batch = db.batch();
-                        if (queryDocumentSnapshots.size() > 0) {
-                            for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                                if (!roomNum.equals(doc.getId())) {
-                                    batch.delete(db.collection("rooms").document(doc.getId()));
-                                }
+                new AlertDialog.Builder(this)
+                        .setTitle("Warning!")
+                        .setMessage("All rooms will be deleted, comfirm?")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                db.collection("rooms").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        WriteBatch batch = db.batch();
+                                        if (queryDocumentSnapshots.size() > 0) {
+                                            for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                                                if (!roomNum.equals(doc.getId())) {
+                                                    batch.delete(db.collection("rooms").document(doc.getId()));
+                                                }
+                                            }
+                                        }
+                                        batch.commit();
+                                    }
+                                });
                             }
-                        }
-                        batch.commit();
-                    }
-                });
+                        })
+                        .setNegativeButton("Cancal", null)
+                        .show();
                 break;
         }
         return false;
