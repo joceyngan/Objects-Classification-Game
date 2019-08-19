@@ -116,6 +116,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private LinearLayout gestureLayout;
     private Animation alpha, rotate;
     private MediaPlayer win;
+    private boolean isFinished = false;
 
     private BottomSheetBehavior sheetBehavior;
     protected TextView completedTv, itemNow, itemNowStatus;
@@ -225,7 +226,7 @@ public abstract class CameraActivity extends AppCompatActivity
             public void onInit(int i) {
                 if (i == TextToSpeech.SUCCESS) {
                     tts.setSpeechRate(0.9f);
-                    tts1.setLanguage(Locale.ENGLISH);
+                    tts.setLanguage(Locale.ENGLISH);
                     tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                         @Override
                         public void onDone(String utteranceId) {
@@ -330,10 +331,10 @@ public abstract class CameraActivity extends AppCompatActivity
                     checkAllSame = false;
                 }
 
-                Log.e("Checker", "C Item: " + currentItem + "\t\tFound? " + checkAllSame);
-                Log.e("Checker", "Item 1: " + checkValue[0]);
-                Log.e("Checker", "Item 2: " + checkValue[1]);
-                Log.e("Checker", "Item 3: " + checkValue[2]);
+                //Log.e("Checker", "C Item: " + currentItem + "\t\tFound? " + checkAllSame);
+                //Log.e("Checker", "Item 1: " + checkValue[0]);
+                //Log.e("Checker", "Item 2: " + checkValue[1]);
+                //Log.e("Checker", "Item 3: " + checkValue[2]);
                 if (checkAllSame && currentItem != 999) {
                     Log.e("Updated", "Item is complete: " + checkValue[checkInt]);
                     checkerHandler.sendEmptyMessage(checkValue[checkInt]);
@@ -417,7 +418,7 @@ public abstract class CameraActivity extends AppCompatActivity
             public void run() {
                 timerHandler.sendEmptyMessage(0);
             }
-        }, 1, 1);
+        }, 1, 10);
     }
 
     private Handler timerHandler = new Handler(new Handler.Callback() {
@@ -427,7 +428,10 @@ public abstract class CameraActivity extends AppCompatActivity
             SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
             Date resultdate = new Date(spentTime);
             finishTime = sdf.format(resultdate);
-            time.setText(sdf.format(resultdate));
+            Log.e("Finish Time", finishTime);
+            if (!isFinished) {
+                time.setText(sdf.format(resultdate));
+            }
             return false;
         }
     });
@@ -869,8 +873,10 @@ public abstract class CameraActivity extends AppCompatActivity
 
         completedTv.setText(completed + " / 10");
         itemLeft = 10 - completed;
-        if (completed == 10) {
-            //tts.setPitch(0.8f);
+        if (completed == 1) {
+            isFinished = true;
+
+            timer.cancel();
             new AlertDialog.Builder(this)
                     .setTitle("Congratulation!")
                     .setMessage("You have completed the game in " + finishTime)
@@ -900,7 +906,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
             Thread t1 = new Thread(r1);
             t1.start();
-            timer.cancel();
+
         }
     }
 
