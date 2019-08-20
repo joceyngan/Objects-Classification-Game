@@ -1,8 +1,12 @@
 package com.schoolofai.objectclassificationgame.student;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -11,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.schoolofai.objectclassificationgame.R;
 import com.schoolofai.objectclassificationgame.models.Player;
 import com.schoolofai.objectclassificationgame.models.Room;
+
 
 public class studentBase extends AppCompatActivity {
 
@@ -38,5 +43,13 @@ public class studentBase extends AppCompatActivity {
             player.setPlayerUid(user.getUid());
         }
         getSupportFragmentManager().beginTransaction().add(R.id.studentFragmentLayout, new EnterTeamNameFragment()).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.studentFragmentLayout);
+        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
+            super.onBackPressed();
+        }
     }
 }

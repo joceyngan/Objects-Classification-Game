@@ -52,6 +52,14 @@
                 android:gravity="center"
                 android:textSize="30sp"
                 android:textColor="@color/buttonTextColor"/>
+            <TextView
+                android:text="Kick"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:textColor="@color/buttonTextColor"/>
 
         </LinearLayout>
         <ListView
