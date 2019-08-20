@@ -129,7 +129,7 @@ public class RoomListFragment extends Fragment {
                 public void onSuccess(Void aVoid) {
                     Log.e("SUCCESS", "Transaction success!");
                     listenerChange.remove();
-                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new WaitingRoomFragment()).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new WaitingRoomFragment(),"WaitingRoomFragment").commit();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

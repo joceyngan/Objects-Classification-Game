@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.CountDownTimer;
 import android.text.Html;
@@ -40,7 +41,8 @@ import java.util.TimerTask;
 import static com.schoolofai.objectclassificationgame.student.studentBase.currentroom;
 import static com.schoolofai.objectclassificationgame.student.studentBase.player;
 
-public class WaitingRoomFragment extends Fragment {
+public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
+    public android.app.Fragment commit;
     private TextView tvRoomNumber;
     private TextView tvRuleOne;
     private TextView tvStatus;
@@ -61,6 +63,13 @@ public class WaitingRoomFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public boolean onBackPressed() {
+        if (getFragmentManager().findFragmentByTag("WaitingRoomFragment") != null && getFragmentManager().findFragmentByTag("WaitingRoomFragment").isVisible()){
+            getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
+        }
+            return true;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -122,7 +131,7 @@ public class WaitingRoomFragment extends Fragment {
                                     intent.putExtra("roomNumber", currentroom.getRoomId());
                                     intent.putExtra("player", player);
                                     startActivity(intent);
-                                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
+                                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
                                 }
                             }.start();
 
@@ -130,7 +139,7 @@ public class WaitingRoomFragment extends Fragment {
                         }
                     }else{
                         listenerChange.remove();
-                        getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
+                        getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
                     }
 
                 }
