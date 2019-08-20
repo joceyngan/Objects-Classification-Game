@@ -20,8 +20,6 @@ public class Player implements Parcelable {
         this.playerUid = playerUid;
     }
 
-
-
     public int getStatus() {
         return status;
     }
@@ -66,9 +64,6 @@ public class Player implements Parcelable {
         this.status = Integer.parseInt(data[3]);
     }
 
-    public Player(String name){
-        this.playerName = name;
-    }
 
     @Override
     public int describeContents() {
