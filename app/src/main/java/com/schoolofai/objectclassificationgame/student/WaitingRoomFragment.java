@@ -19,7 +19,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,6 +37,7 @@ import com.schoolofai.objectclassificationgame.R;
 import com.schoolofai.objectclassificationgame.models.Player;
 import com.schoolofai.objectclassificationgame.models.Room;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -68,16 +72,28 @@ private List<Player> playerList;
     public boolean onBackPressed() {
         if (getFragmentManager().findFragmentByTag("WaitingRoomFragment") != null && getFragmentManager().findFragmentByTag("WaitingRoomFragment").isVisible()){
             //do remove function here
-            player.getPlayerUid();
-            Log.e("UID", player.getPlayerUid());
             documentReference = db.collection("rooms").document(currentroom.getRoomId());
             db.runTransaction((Transaction.Function<Void>) transaction -> {
-            playerList.remove(player.getPlayerUid());
-                transaction.update(documentReference, "players", playerList);
-                //
+                DocumentSnapshot snapshot = transaction.get(documentReference);
+                Room roomtmp = snapshot.toObject(Room.class);
+                playerList = roomtmp.getPlayers();
+                playerList.remove(Integer.valueOf(player.getPlayerUid()).intValue());
+                Log.e("listSize", Integer.toString(playerList.size()));
+                    transaction.update(documentReference, "players", playerList);
                 return null;
+            }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.e("SUCCESS", "Transaction success!");
+                    listenerChange.remove();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(context,"Team is full", Toast.LENGTH_LONG).show();
+                    Log.e("FAIL", "Transaction failure.", e);
+                }
             });
-
             getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
         }
         return true;
