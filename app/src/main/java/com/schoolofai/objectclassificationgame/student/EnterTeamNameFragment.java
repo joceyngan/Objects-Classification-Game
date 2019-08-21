@@ -21,6 +21,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,6 +33,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
 import com.google.firebase.firestore.WriteBatch;
 import com.schoolofai.objectclassificationgame.R;
+import com.schoolofai.objectclassificationgame.login;
 import com.schoolofai.objectclassificationgame.models.Player;
 import com.schoolofai.objectclassificationgame.models.Room;
 import com.schoolofai.objectclassificationgame.tutor.RoomNumberFragment;
@@ -38,15 +42,19 @@ import com.schoolofai.objectclassificationgame.tutor.tutorWelcome;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import static com.schoolofai.objectclassificationgame.student.studentBase.player;
 
 
+
 public class EnterTeamNameFragment extends Fragment {
 
+    private FirebaseAuth mAuth;
     private EditText editTextTeamName;
     private Button buttonEnterTeamName;
-    private DocumentReference[] documentReference;
+    private DocumentReference documentReference;
+    private DocumentSnapshot documentSnapshot;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private int count = 0,  equalcount=0;
     private String key="";
@@ -55,45 +63,27 @@ public class EnterTeamNameFragment extends Fragment {
     }
     public Boolean test(String input){
         Log.d("LOGGER","1");
-
-         db.collection("player").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    documentReference= new DocumentReference [task.getResult().size()];
-                    snapshot = new DocumentSnapshot[documentReference.length];
-                    for (DocumentSnapshot document : task.getResult()) {
-                        snapshot[count] = document;
-                        String playerName1 = snapshot[count].getString("playerName");
-                        if (!input.equalsIgnoreCase(playerName1)) {
-                            equalcount++;
-                        }
-                        count++;
-                    }
+        documentReference = db.collection("player").document("playerDoc");
                         db.runTransaction((Transaction.Function<Void>) transaction -> {
-                            Log.d("LOGGER", "333SIZE="+Integer.toString(equalcount));
-                            if(equalcount==count) {
-                                Log.d("LOGGER", "4=" + input);
-                                Map<String, Object> playerName = new HashMap<>();
-                                playerName.put("playerName", input);
-                                key = db.collection("player").document().getId();
-                                DocumentReference doc = db.collection("player").document(key);
-                                transaction.set(doc, playerName);
-                                Log.d("LOGGER", "70=Successful=" + key);
+                            documentSnapshot = transaction.get(documentReference);
+                            Map<String, String>data =(Map<String, String>)documentSnapshot.getData().get("player");
+                            Log.d("TEST","data="+data.toString());
+                            if(!data.containsValue(input)) {
+                                Map<String, String>inputdata = new HashMap<>();
+                                inputdata.putAll(data);
+                                inputdata.remove(mAuth.getCurrentUser().getUid());
+                                inputdata.put(mAuth.getCurrentUser().getUid(), input);
+                                transaction.update(documentReference,"player",inputdata);
                             }
                             return null;
                         }).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Log.e("SUCCESS", "Transaction success!");
-                                if(equalcount==count) {
                                     player.setPlayerName(input);
-                                    Log.d("LOGGER", "80=Successful=" + key);
-                                    player.setPlayerUid(key);
+                                    Log.d("LOGGER", "80=Successful=" + mAuth.getCurrentUser().getUid());
+                                    player.setPlayerUid(mAuth.getCurrentUser().getUid());
                                     getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
-                                }else{
-                                    editTextTeamName.setError("Team Name is exisit!");
-                                }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -102,11 +92,7 @@ public class EnterTeamNameFragment extends Fragment {
                                 Log.e("FAIL", "Transaction failure.", e);
                             }
                         });
-                } else {
-                    Log.d("ERROR", "Error getting documents: ", task.getException());
-                }
-            }
-        });
+
          count=0;
         equalcount=0;
          return true;
@@ -121,8 +107,30 @@ public class EnterTeamNameFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         super.onViewCreated(view, savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        mAuth.signInAnonymously()
+                .addOnCompleteListener( getActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("LOGGER", "signInAnonymously:success");
+                            Log.d("LOGGER","Uid="+currentUser.getUid());
+                            player.setPlayerUid(currentUser.getUid());
+                            // FirebaseUser user = mAuth.getCurrentUser();
+                            //  updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("LOGGER", "signInAnonymously:failure", task.getException());
+                            Toast.makeText(getContext(), "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            // updateUI(null);
+                        }
+                        // ...
+                    }
+                });
         editTextTeamName = view.findViewById(R.id.editTextTeamName);
         buttonEnterTeamName = view.findViewById(R.id.buttonEnterTeamName);
         buttonEnterTeamName.setOnClickListener(new View.OnClickListener() {
@@ -137,9 +145,12 @@ public class EnterTeamNameFragment extends Fragment {
                     return;
                 }
                 editTextTeamName.setError(null);
-                test(teamName);
+                 test(teamName);
             }
         });
 
     }
+
+
+
 }

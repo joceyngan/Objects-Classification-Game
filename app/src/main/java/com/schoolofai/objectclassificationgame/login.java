@@ -8,10 +8,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.schoolofai.objectclassificationgame.student.studentBase;
 import com.schoolofai.objectclassificationgame.student.studentWelcome;
 import com.schoolofai.objectclassificationgame.tutor.tutorWelcome;
@@ -27,6 +34,8 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
         btnStudent = findViewById(R.id.btnStudent);
         btnTutor = findViewById(R.id.btnTutor);
+
+
 
         initListener();
     }
