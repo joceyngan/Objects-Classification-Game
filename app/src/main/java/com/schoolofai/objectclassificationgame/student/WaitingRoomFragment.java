@@ -47,6 +47,7 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
     private TextView tvRuleOne;
     private TextView tvStatus;
     private Button btnReady;
+private List<Player> playerList;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference documentReference;
@@ -66,9 +67,20 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
     @Override
     public boolean onBackPressed() {
         if (getFragmentManager().findFragmentByTag("WaitingRoomFragment") != null && getFragmentManager().findFragmentByTag("WaitingRoomFragment").isVisible()){
+            //do remove function here
+            player.getPlayerUid();
+            Log.e("UID", player.getPlayerUid());
+            documentReference = db.collection("rooms").document(currentroom.getRoomId());
+            db.runTransaction((Transaction.Function<Void>) transaction -> {
+            playerList.remove(player.getPlayerUid());
+                transaction.update(documentReference, "players", playerList);
+                //
+                return null;
+            });
+
             getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
         }
-            return true;
+        return true;
     }
 
     @Override

@@ -44,7 +44,7 @@ public class RoomListFragment extends Fragment {
 
     private ListView listView;
     private List<Room> roomlist;
-    private List<Player> playerList;
+    protected static List<Player> playerList;
     private RoomListAdapter roomListAdapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference;
