@@ -45,7 +45,7 @@ import java.util.TimerTask;
 import static com.schoolofai.objectclassificationgame.student.studentBase.currentroom;
 import static com.schoolofai.objectclassificationgame.student.studentBase.player;
 
-public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
+public class WaitingRoomFragment extends Fragment implements IOnBackPressed {
     public android.app.Fragment commit;
     private TextView tvRoomNumber;
     private TextView tvRuleOne;
@@ -65,6 +65,7 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
     private String s;
 
     private Timer timer;
+    private String TAG = "WaitingRoomFragment";
 
     public WaitingRoomFragment() {
         // Required empty public constructor
@@ -72,33 +73,27 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
 
     @Override
     public boolean onBackPressed() {
-        if (getFragmentManager().findFragmentByTag("WaitingRoomFragment") != null && getFragmentManager().findFragmentByTag("WaitingRoomFragment").isVisible()){
+        if (getFragmentManager().findFragmentByTag("WaitingRoomFragment") != null && getFragmentManager().findFragmentByTag("WaitingRoomFragment").isVisible()) {
             //do remove function here
             documentReference = db.collection("rooms").document(currentroom.getRoomId());
             db.runTransaction((Transaction.Function<Void>) transaction -> {
                 DocumentSnapshot snapshot = transaction.get(documentReference);
                 Room roomtmp = snapshot.toObject(Room.class);
-                playerList = roomtmp.getPlayers();
-                idx = playerList.indexOf(Integer.valueOf(player.getPlayerUid()).intValue());
-                s = String.valueOf(playerList.get(idx));
-                playerList.remove(s);
-                Log.e("listSize", Integer.toString(playerList.size()));
-                    transaction.update(documentReference, "players", playerList);
+                roomtmp.kickPlayer(player.getPlayerUid());
+                transaction.set(documentReference, roomtmp);
                 return null;
             }).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.e("SUCCESS", "Transaction success!");
-                    listenerChange.remove();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(context,"Back to room list", Toast.LENGTH_LONG).show();
                     Log.e("FAIL", "Transaction failure.", e);
                 }
             });
-            getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
+            getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(), "RoomListFragment").commit();
         }
         return true;
     }
@@ -134,9 +129,33 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
             public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 if (documentSnapshot != null) {
                     currentroom = documentSnapshot.toObject(Room.class);
-                    if (currentroom !=null){
-                        Log.e("currentroom", "not null");
+                    if (currentroom != null) {
                         UpdateReadyNumber();
+
+                        playerList = currentroom.getPlayers();
+                        idx = 0;
+                        boolean kicked = false;
+                        Log.w(TAG, "PlayerList size: " + playerList.size());
+                        if (playerList.size() == 0){
+                            kicked = true;
+                        }
+                        for (Player checkPlayer : playerList) {
+                            Log.w(TAG, "Check Play: " + checkPlayer.getPlayerUid());
+                            Log.w(TAG, "Current Play: " + player.getPlayerUid() + "");
+                            if (checkPlayer.getPlayerUid().equals(player.getPlayerUid())) {
+                                kicked = false;
+                                break;
+                            }
+                            idx++;
+                            kicked = true;
+                        }
+                        Log.w(TAG, "PlayerList size: " + kicked);
+                        if (kicked){
+                            listenerChange.remove();
+                            Toast.makeText(getContext(), "You are kicked by tutor" , Toast.LENGTH_LONG).show();
+                            getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(), "RoomListFragment").commit();
+                        }
+
                         if (currentroom.getStatus() == 1) {
                             listenerChange.remove();
                             linearLayout.setVisibility(View.GONE);
@@ -145,15 +164,14 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
                             countTimeLayout.setVisibility(View.VISIBLE);
                             countTime.setText("3");
                             new CountDownTimer(4000, 100) {
-
                                 public void onTick(long millisUntilFinished) {
-                                    if (millisUntilFinished < 1000){
+                                    if (millisUntilFinished < 1000) {
                                         countTime.setText("GO");
-                                    }else if(millisUntilFinished < 2000){
+                                    } else if (millisUntilFinished < 2000) {
                                         countTime.setText("1");
-                                    }else if (millisUntilFinished < 3000){
+                                    } else if (millisUntilFinished < 3000) {
                                         countTime.setText("2");
-                                    }else {
+                                    } else {
                                         countTime.setText("3");
                                     }
                                 }
@@ -163,15 +181,15 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
                                     intent.putExtra("roomNumber", currentroom.getRoomId());
                                     intent.putExtra("player", player);
                                     startActivity(intent);
-                                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
+                                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(), "RoomListFragment").commit();
                                 }
                             }.start();
 
 
                         }
-                    }else{
+                    } else {
                         listenerChange.remove();
-                        getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
+                        getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(), "RoomListFragment").commit();
                     }
 
                 }
@@ -200,7 +218,6 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
     }
 
 
-
     private void UpdateReadyNumber() {
         List<Player> playerlist = currentroom.getPlayers();
         readyNumber = 0;
@@ -210,10 +227,6 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
             }
         }
         tvStatus.setText(readyNumber + " / " + playerlist.size());
-        /*Log.d("playerUId",player.getPlayerUid());
-        if (playerList.get(playerList.indexOf(player.getPlayerName()))==null){
-            getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
-        }*/
     }
 
     private String getColoredSpanned(String text, String color) {

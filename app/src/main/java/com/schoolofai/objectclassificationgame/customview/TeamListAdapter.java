@@ -41,7 +41,7 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
     private DocumentReference documentReference;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Room room;
-    private Player player = new Player();
+    private Player player;
     private ListenerRegistration listenerChange;
 
     private int arrayIndex;
@@ -51,77 +51,23 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         View listItem = convertView;
-        Player player = playerList.get(position);
+        player = playerList.get(position);
 
-        if(listItem == null)
-            listItem = LayoutInflater.from(context).inflate(R.layout.item_teamlist, parent,false);
+        if (listItem == null)
+            listItem = LayoutInflater.from(context).inflate(R.layout.item_teamlist, parent, false);
 
         TextView tvTeamName = listItem.findViewById(R.id.tvTeamName);
         TextView tvStatus = listItem.findViewById(R.id.tvStatus);
         btnKick = listItem.findViewById(R.id.btnKick);
-        //Wait for debug
         btnKick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("onClick","click");
-                //displayAlertDialog();
-
-                Log.d("currentRoomId",room.getRoomId());
-                Log.d("playerUID",player.getPlayerUid());
-                Log.d("playerName",player.getPlayerName());
-                documentReference = db.collection("rooms").document(room.getRoomId());
-                db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    DocumentSnapshot snapshot = transaction.get(documentReference);
-                    Room roomtmp = snapshot.toObject(Room.class);
-                    playerList = roomtmp.getPlayers();
-                    /*for (Object a : playerList){
-                        if (a.equals(player)) {
-                            arrayIndex=playerList.indexOf(player);
-                            break;
-                        }
-
-                    }*/
-                    Object data = transaction.get(documentReference).get("players");
-                    ArrayList<Object> toArray = (ArrayList<Object>)data;
-                    for (int i=0;i<toArray.size();i++) {
-                        Map<String, String> q = (Map<String, String>) toArray.get(i);
-                        if (q.get(i).equalsIgnoreCase(player.getPlayerName())) {
-                            arrayIndex = i;
-                            break;
-                        }
-                    }
-                       /*Object data = transaction.get(documentReference).get("players");
-                    ArrayList<Object> toArray = (ArrayList<Object>)data;
-                    for (int i=0;i<toArray.size();i++) {
-                        Map<String, String> q = (Map<String, String>) toArray.get(i);
-                        if (q.get(i).equalsIgnoreCase(player.getPlayerUid())) {
-                            toArray.remove(i);
-                            break;
-                        }
-
-                    }*/
-
-                    playerList.remove(arrayIndex);
-                    Log.e("listSize", Integer.toString(playerList.size()));
-                    transaction.update(documentReference, "players", playerList);
-                    return null;
-                }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.e("SUCCESS", "Transaction success!");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context,"Team is full", Toast.LENGTH_LONG).show();
-                        Log.e("FAIL", "Transaction failure.", e);
-                    }
-                });
+                displayAlertDialog();
             }
         });
 
         tvTeamName.setText(player.getPlayerName());
-        switch (player.getStatus()){
+        switch (player.getStatus()) {
             case 0:
                 tvStatus.setText("Waiting");
                 break;
@@ -131,7 +77,8 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
             case 2:
                 tvStatus.setText("Status: Completed");
                 break;
-        };
+        }
+        ;
         return listItem;
     }
 
@@ -142,23 +89,37 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
         this.room = room;
     }
 
-    private void displayAlertDialog(){
+    private void displayAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Are you sure to kick player?\n");
-        //builder.setTitle("Are you sure to kick player"+room.getPlayers().toString()+"?\n");
-        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+        builder.setTitle("Are you sure to kick " + player.getPlayerName() + "?\n");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //do remove function here
-
+                documentReference = db.collection("rooms").document(room.getRoomId());
+                db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot snapshot = transaction.get(documentReference);
+                    Room roomtmp = snapshot.toObject(Room.class);
+                    roomtmp.kickPlayer(player.getPlayerUid());
+                    transaction.set(documentReference, roomtmp);
+                    return null;
+                }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e("SUCCESS", "Transaction success!");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("FAIL", "Transaction failure.", e);
+                    }
+                });
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
-        });
-        builder.show();
+        }).show();
     }
 }

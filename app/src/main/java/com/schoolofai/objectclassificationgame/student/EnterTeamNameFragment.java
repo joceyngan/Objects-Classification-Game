@@ -88,6 +88,7 @@ public class EnterTeamNameFragment extends Fragment {
                     return;
                 }
                 editTextTeamName.setError(null);
+                player.setPlayerName(teamName);
                 checkTeamName(teamName);
             }
         });
@@ -100,6 +101,7 @@ public class EnterTeamNameFragment extends Fragment {
             if (!documentSnapshot.exists()) {
                 Log.w(TAG, "null document");
                 transaction.set(documentReference, player);
+                getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
                 return null;
             } else {
                 Timestamp timestamp = (Timestamp) documentSnapshot.get("expireDate");
@@ -107,10 +109,12 @@ public class EnterTeamNameFragment extends Fragment {
 
                 if (player.getPlayerUid().equals(documentSnapshot.get("playerUid"))) {
                     transaction.set(documentReference, player);
+                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
                     return null;
                 } else if (timestamp.getSeconds() < now.getSeconds()) {
                     Log.w(TAG, timestamp.getSeconds() + "Now: " + now.getSeconds() + "");
                     transaction.set(documentReference, player);
+                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
                     return null;
                 }
                 throw new FirebaseFirestoreException("Population too high",
@@ -119,7 +123,7 @@ public class EnterTeamNameFragment extends Fragment {
         }).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

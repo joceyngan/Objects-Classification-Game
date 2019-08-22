@@ -11,6 +11,8 @@ public class Player implements Parcelable {
     private String playerUid;
     private String playerName;
     private int completedItem;
+
+
     private int status;
     private String completedTime = "99:99.999";
     private Date date = new Date();

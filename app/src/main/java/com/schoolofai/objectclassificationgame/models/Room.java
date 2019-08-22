@@ -54,9 +54,10 @@ public class Room {
     }
 
     public void UpdateStatus(String uid, int status){
-        Player playertmp = players.get(Integer.parseInt(uid));
+        int idx = findIndexByUid(uid);
+        Player playertmp = players.get(idx);
         playertmp.setStatus(status);
-        players.set(Integer.parseInt(uid), playertmp);
+        players.set(idx, playertmp);
     }
 
     public void UpdateAllPlayerStatus(int status){
@@ -66,9 +67,10 @@ public class Room {
     }
 
     public void UpdateCompleted(String uid, int completed){
-        Player playertmp = players.get(Integer.parseInt(uid));
+        int idx = findIndexByUid(uid);
+        Player playertmp = players.get(idx);
         playertmp.setCompletedItem(completed);
-        players.set(Integer.parseInt(uid), playertmp);
+        players.set(idx, playertmp);
     }
 
     public void UpdateCompleteTime(String playerUid, String finishTime) {
@@ -76,5 +78,20 @@ public class Room {
         playertmp.setCompletedTime(finishTime);
         players.set(Integer.parseInt(playerUid), playertmp);
 
+    }
+    private int findIndexByUid(String uid){
+        int idx = 0;
+        for (Player checkPlayer : players){
+            if (checkPlayer.getPlayerUid().equals(uid)){
+                break;
+            }
+            idx++;
+        }
+        return idx;
+    }
+
+    public void kickPlayer(String uid) {
+        int idx = findIndexByUid(uid);
+        players.remove(idx);
     }
 }

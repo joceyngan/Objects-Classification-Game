@@ -76,11 +76,11 @@ public class RoomListFragment extends Fragment {
         listenerChange = collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots.size() > 0){
+                if (queryDocumentSnapshots.size() > 0) {
                     roomlist = new ArrayList<>();
-                    for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         Room roomtmp = documentSnapshot.toObject(Room.class);
-                        if (roomtmp.getPlayers().size() < 4 && roomtmp.getStatus()==0){
+                        if (roomtmp.getPlayers().size() < 4 && roomtmp.getStatus() == 0) {
                             roomlist.add(roomtmp);
                         }
                     }
@@ -105,36 +105,32 @@ public class RoomListFragment extends Fragment {
             documentReference = db.collection("rooms").document(roomlist.get(position).getRoomId());
             db.runTransaction((Transaction.Function<Void>) transaction -> {
                 DocumentSnapshot snapshot = transaction.get(documentReference);
-
                 Room roomtmp = snapshot.toObject(Room.class);
                 playerList = new ArrayList<>();
-                if (roomtmp.getPlayers() != null) {
-                    playerList = roomtmp.getPlayers();
+                if (roomtmp != null) {
+                    if (roomtmp.getPlayers() != null) {
+                        playerList = roomtmp.getPlayers();
+                        //Log.e("Playerlist", Integer.toString(playerList.size()));
+                    }
+                    if (playerList.size() < 4 && roomtmp.getStatus() == 0) {
+                        playerList.add(player);
+                        transaction.update(documentReference, "players", playerList);
+                    } else {
+                        Log.e("Fail", "Team Full");
+                        throw new FirebaseFirestoreException("Team is Full",FirebaseFirestoreException.Code.ABORTED);
+                    }
                 }
-                Log.e("Playerlist1", Integer.toString(playerList.size()));
-                if (playerList.size() < 4 && roomtmp.getStatus() == 0){
-                    Log.e("Playerlist2", Integer.toString(playerList.size()));
-                  //  player.setPlayerUid(Integer.toString(playerList.size()));
-                    playerList.add(player);
-                    transaction.update(documentReference, "players", playerList);
-                    Log.e("Playerlist1", Integer.toString(playerList.size()));
-                }else{
-                    Log.e("Fail", "Team Full");
-                }
-
-
                 return null;
             }).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.e("SUCCESS", "Transaction success!");
                     listenerChange.remove();
-                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new WaitingRoomFragment(),"WaitingRoomFragment").commit();
+                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new WaitingRoomFragment(), "WaitingRoomFragment").commit();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(context,"Team is full", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Team is full", Toast.LENGTH_LONG).show();
                     Log.e("FAIL", "Transaction failure.", e);
                 }
             });

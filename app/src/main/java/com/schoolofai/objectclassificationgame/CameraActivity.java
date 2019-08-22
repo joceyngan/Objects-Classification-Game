@@ -879,9 +879,8 @@ public abstract class CameraActivity extends AppCompatActivity
 
         completedTv.setText(completed + " / 10");
         itemLeft = 10 - completed;
-        if (completed == 1) {
+        if (completed == 10) {
             isFinished = true;
-
             timer.cancel();
             new AlertDialog.Builder(this)
                     .setTitle("Congratulation!")
