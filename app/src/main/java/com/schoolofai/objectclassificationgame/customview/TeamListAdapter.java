@@ -29,8 +29,7 @@ import com.schoolofai.objectclassificationgame.models.Room;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.Map;
 
 
 public class TeamListAdapter extends ArrayAdapter<Player> {
@@ -76,15 +75,31 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
                     Room roomtmp = snapshot.toObject(Room.class);
                     playerList = roomtmp.getPlayers();
                     /*for (Object a : playerList){
-                        String [] b = (String[])a;
-                        if(b[1]==player.getPlayerName())
-                            arrayIndex=playerList.indexOf(a);
-                        break;
+                        if (a.equals(player)) {
+                            arrayIndex=playerList.indexOf(player);
+                            break;
+                        }
+
                     }*/
-                    for (int i=0;i<playerList.size();i++){
-                        if (playerList.get(i)==playerList.contains(player.getPlayerName()))
-                            arrayIndex=i;
+                    Object data = transaction.get(documentReference).get("players");
+                    ArrayList<Object> toArray = (ArrayList<Object>)data;
+                    for (int i=0;i<toArray.size();i++) {
+                        Map<String, String> q = (Map<String, String>) toArray.get(i);
+                        if (q.get(i).equalsIgnoreCase(player.getPlayerName())) {
+                            arrayIndex = i;
+                            break;
+                        }
                     }
+                       /*Object data = transaction.get(documentReference).get("players");
+                    ArrayList<Object> toArray = (ArrayList<Object>)data;
+                    for (int i=0;i<toArray.size();i++) {
+                        Map<String, String> q = (Map<String, String>) toArray.get(i);
+                        if (q.get(i).equalsIgnoreCase(player.getPlayerUid())) {
+                            toArray.remove(i);
+                            break;
+                        }
+
+                    }*/
 
                     playerList.remove(arrayIndex);
                     Log.e("listSize", Integer.toString(playerList.size()));
