@@ -68,7 +68,7 @@ public class EnterTeamNameFragment extends Fragment {
                             documentSnapshot = transaction.get(documentReference);
                             Map<String, String>data =(Map<String, String>)documentSnapshot.getData().get("player");
                             Log.d("TEST","data="+data.toString());
-                            if(!data.containsValue(input)) {
+                            if(!data.containsValue(input)|| data.get(mAuth.getCurrentUser().getUid()).equalsIgnoreCase(input)) {
                                 Map<String, String>inputdata = new HashMap<>();
                                 inputdata.putAll(data);
                                 inputdata.remove(mAuth.getCurrentUser().getUid());
@@ -102,12 +102,6 @@ public class EnterTeamNameFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.enter_teamname_fragment, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         mAuth.signInAnonymously()
@@ -117,9 +111,10 @@ public class EnterTeamNameFragment extends Fragment {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("LOGGER", "signInAnonymously:success");
-                            Log.d("LOGGER","Uid="+currentUser.getUid());
-                            player.setPlayerUid(currentUser.getUid());
-                            // FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d("LOGGER","Uid="+user.getUid());
+                            player.setPlayerUid(user.getUid());
+
                             //  updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -131,6 +126,13 @@ public class EnterTeamNameFragment extends Fragment {
                         // ...
                     }
                 });
+        return inflater.inflate(R.layout.enter_teamname_fragment, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         editTextTeamName = view.findViewById(R.id.editTextTeamName);
         buttonEnterTeamName = view.findViewById(R.id.buttonEnterTeamName);
         buttonEnterTeamName.setOnClickListener(new View.OnClickListener() {
