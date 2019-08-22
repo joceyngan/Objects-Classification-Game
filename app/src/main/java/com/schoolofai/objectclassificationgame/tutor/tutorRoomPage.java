@@ -37,7 +37,7 @@ public class tutorRoomPage extends AppCompatActivity{
     private ListenerRegistration listenerChange;
 
     private ListView listView;
-    private Room room = new Room();
+    protected static Room room = new Room();
     private int roomNumber;
     private String TAG = "tutorRoomPage";
     private TeamListAdapter teamListAdapter;
@@ -79,7 +79,7 @@ public class tutorRoomPage extends AppCompatActivity{
                 room = documentSnapshot.toObject(Room.class);
                 if (room != null){
                     List<Player> players = room.getPlayers();
-                    teamListAdapter = new TeamListAdapter(getApplicationContext(), players);
+                    teamListAdapter = new TeamListAdapter(getApplicationContext(), players , room);
                     listView.setAdapter(teamListAdapter);
                 }
             }
