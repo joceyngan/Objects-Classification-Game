@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
@@ -40,6 +42,7 @@ import com.schoolofai.objectclassificationgame.tutor.RoomNumberFragment;
 import com.schoolofai.objectclassificationgame.tutor.tutorWelcome;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -47,85 +50,23 @@ import java.util.concurrent.Executor;
 import static com.schoolofai.objectclassificationgame.student.studentBase.player;
 
 
-
 public class EnterTeamNameFragment extends Fragment {
-
-    private FirebaseAuth mAuth;
+    private String TAG = "EnterTeamNameFragment";
     private EditText editTextTeamName;
     private Button buttonEnterTeamName;
     private DocumentReference documentReference;
     private DocumentSnapshot documentSnapshot;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private int count = 0,  equalcount=0;
-    private String key="";
-    private DocumentSnapshot[] snapshot;
+
+
     public EnterTeamNameFragment() {
     }
-    public Boolean test(String input){
-        Log.d("LOGGER","1");
-        documentReference = db.collection("player").document("playerDoc");
-                        db.runTransaction((Transaction.Function<Void>) transaction -> {
-                            documentSnapshot = transaction.get(documentReference);
-                            Map<String, String>data =(Map<String, String>)documentSnapshot.getData().get("player");
-                            Log.d("TEST","data="+data.toString());
-                            if(!data.containsValue(input)|| data.get(mAuth.getCurrentUser().getUid()).equalsIgnoreCase(input)) {
-                                Map<String, String>inputdata = new HashMap<>();
-                                inputdata.putAll(data);
-                                inputdata.remove(mAuth.getCurrentUser().getUid());
-                                inputdata.put(mAuth.getCurrentUser().getUid(), input);
-                                transaction.update(documentReference,"player",inputdata);
-                            }
-                            return null;
-                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.e("SUCCESS", "Transaction success!");
-                                    player.setPlayerName(input);
-                                    Log.d("LOGGER", "80=Successful=" + mAuth.getCurrentUser().getUid());
-                                    player.setPlayerUid(mAuth.getCurrentUser().getUid());
-                                    getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                editTextTeamName.setError("Team Name is exisit!");
-                                Log.e("FAIL", "Transaction failure.", e);
-                            }
-                        });
-
-         count=0;
-        equalcount=0;
-         return true;
-    }
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        mAuth.signInAnonymously()
-                .addOnCompleteListener( getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("LOGGER", "signInAnonymously:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Log.d("LOGGER","Uid="+user.getUid());
-                            player.setPlayerUid(user.getUid());
 
-                            //  updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("LOGGER", "signInAnonymously:failure", task.getException());
-                            Toast.makeText(getContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            // updateUI(null);
-                        }
-                        // ...
-                    }
-                });
+
         return inflater.inflate(R.layout.enter_teamname_fragment, container, false);
     }
 
@@ -139,20 +80,54 @@ public class EnterTeamNameFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String teamName = editTextTeamName.getText().toString();
-                if (teamName.equals("")){
+                if (teamName.equals("")) {
                     editTextTeamName.setError("Team Name cannot blank");
                     return;
-                }else if (teamName.length() > 12){
+                } else if (teamName.length() > 12) {
                     editTextTeamName.setError("Team Name cannot longer then 12 character");
                     return;
                 }
                 editTextTeamName.setError(null);
-                 test(teamName);
+                checkTeamName(teamName);
             }
         });
-
     }
 
+    private void checkTeamName(String teamName) {
+        documentReference = db.collection("players").document(teamName);
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+            documentSnapshot = transaction.get(documentReference);
+            if (!documentSnapshot.exists()) {
+                Log.w(TAG, "null document");
+                transaction.set(documentReference, player);
+                return null;
+            } else {
+                Timestamp timestamp = (Timestamp) documentSnapshot.get("expireDate");
+                Timestamp now = new Timestamp(new Date());
 
+                if (player.getPlayerUid().equals(documentSnapshot.get("playerUid"))) {
+                    transaction.set(documentReference, player);
+                    return null;
+                } else if (timestamp.getSeconds() < now.getSeconds()) {
+                    Log.w(TAG, timestamp.getSeconds() + "Now: " + now.getSeconds() + "");
+                    transaction.set(documentReference, player);
+                    return null;
+                }
+                throw new FirebaseFirestoreException("Population too high",
+                        FirebaseFirestoreException.Code.ABORTED);
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment()).commit();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                editTextTeamName.setError("Team Name is exisit!");
+                Log.e("FAIL", "Transaction failure.", e);
+            }
+        });
+    }
 
 }

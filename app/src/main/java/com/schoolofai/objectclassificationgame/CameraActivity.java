@@ -952,7 +952,6 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     public void onBackPressed() {
-
         new AlertDialog.Builder(this)
                 .setTitle("Warning!")
                 .setMessage("Are you sure want to exit?")
