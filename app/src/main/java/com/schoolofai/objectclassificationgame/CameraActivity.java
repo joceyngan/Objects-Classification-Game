@@ -194,10 +194,6 @@ public abstract class CameraActivity extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-        alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
-        alpha.reset();
-        rotate = AnimationUtils.loadAnimation(this, R.anim.rotate);
-        rotate.reset();
 
         itemsList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -281,18 +277,28 @@ public abstract class CameraActivity extends AppCompatActivity
                     public void onStateChanged(@NonNull View bottomSheet, int newState) {
                         switch (newState) {
                             case BottomSheetBehavior.STATE_HIDDEN:
+                                toolbar.setVisibility(View.INVISIBLE);
+                                bottomSheetLayout.setAlpha(0.8f);
                                 break;
                             case BottomSheetBehavior.STATE_EXPANDED: {
+                                toolbar.setVisibility(View.INVISIBLE);
+                                bottomSheetLayout.setAlpha(0.8f);
                                 bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_down);
                             }
                             break;
                             case BottomSheetBehavior.STATE_COLLAPSED: {
+                                toolbar.setVisibility(View.VISIBLE);
+                                bottomSheetLayout.setAlpha(1f);
                                 bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
                             }
                             break;
                             case BottomSheetBehavior.STATE_DRAGGING:
+                                toolbar.setVisibility(View.INVISIBLE);
+                                bottomSheetLayout.setAlpha(0.2f);
                                 break;
                             case BottomSheetBehavior.STATE_SETTLING:
+                                toolbar.setVisibility(View.INVISIBLE);
+                                bottomSheetLayout.setAlpha(0.8f);
                                 bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
                                 break;
                         }
