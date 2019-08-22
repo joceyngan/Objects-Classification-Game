@@ -51,7 +51,7 @@ public class WaitingRoomFragment extends Fragment  implements IOnBackPressed{
     private TextView tvRuleOne;
     private TextView tvStatus;
     private Button btnReady;
-private List<Player> playerList;
+    private List<Player> playerList;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference documentReference;
@@ -61,6 +61,8 @@ private List<Player> playerList;
     private TextView countTime;
 
     private int readyNumber;
+    private int idx;
+    private String s;
 
     private Timer timer;
 
@@ -77,7 +79,9 @@ private List<Player> playerList;
                 DocumentSnapshot snapshot = transaction.get(documentReference);
                 Room roomtmp = snapshot.toObject(Room.class);
                 playerList = roomtmp.getPlayers();
-                playerList.remove(Integer.valueOf(player.getPlayerUid()).intValue());
+                idx = playerList.indexOf(Integer.valueOf(player.getPlayerUid()).intValue());
+                s = String.valueOf(playerList.get(idx));
+                playerList.remove(s);
                 Log.e("listSize", Integer.toString(playerList.size()));
                     transaction.update(documentReference, "players", playerList);
                 return null;
@@ -90,7 +94,7 @@ private List<Player> playerList;
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(context,"Team is full", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,"Back to room list", Toast.LENGTH_LONG).show();
                     Log.e("FAIL", "Transaction failure.", e);
                 }
             });
@@ -206,6 +210,10 @@ private List<Player> playerList;
             }
         }
         tvStatus.setText(readyNumber + " / " + playerlist.size());
+        /*Log.d("playerUId",player.getPlayerUid());
+        if (playerList.get(playerList.indexOf(player.getPlayerName()))==null){
+            getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(),"RoomListFragment").commit();
+        }*/
     }
 
     private String getColoredSpanned(String text, String color) {

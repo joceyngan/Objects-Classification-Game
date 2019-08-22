@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,7 +34,6 @@ public class ReadyRoomFragment extends Fragment {
     private ListView listView;
     private TextView roomNumberTextView, readyValueTv;
     private TeamListAdapter teamListAdapter;
-    private Button btnKick;
     private int playerCount, readyCount;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -67,15 +65,6 @@ public class ReadyRoomFragment extends Fragment {
         readyValueTv = view.findViewById(R.id.readyValueTv);
         roomNumberTextView.setText("Rooms " + roomNum);
         documentReference = db.collection("rooms").document(roomNum);
-        btnKick = view.findViewById(R.id.btnKick);
-        //Wait for debug
-        /*btnKick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
-
         listView = view.findViewById(R.id.playerList);
 
         listenerChange = documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -88,7 +77,7 @@ public class ReadyRoomFragment extends Fragment {
                 room = documentSnapshot.toObject(Room.class);
                 if (room != null){
                     List<Player> players = room.getPlayers();
-                    teamListAdapter = new TeamListAdapter(view.getContext(), players);
+                    teamListAdapter = new TeamListAdapter(view.getContext(), players, room);
                     listView.setAdapter(teamListAdapter);
                     playerCount = players.size();
                     readyCount = 0;
@@ -114,21 +103,4 @@ public class ReadyRoomFragment extends Fragment {
         super.onDetach();
     }
 
-    /*private void displayAlertDialog(View v){
-        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-        builder.setTitle("Are you sure to kick player?\n");
-        //builder.setTitle("Are you sure to kick player"+room.getPlayers().toString()+"?\n");
-        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //do remove function here
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-    }*/
 }
