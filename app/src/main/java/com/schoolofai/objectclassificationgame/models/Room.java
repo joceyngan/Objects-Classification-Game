@@ -1,12 +1,26 @@
 package com.schoolofai.objectclassificationgame.models;
 
+import com.google.firebase.Timestamp;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Room {
     private String roomId;
     private List<Player> players = new ArrayList<>();
     private int status = 0;
+    private Timestamp timestamp = new Timestamp(new Date());
+
+
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public int getStatus() {
         return status;

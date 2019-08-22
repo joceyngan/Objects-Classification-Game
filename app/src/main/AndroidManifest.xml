@@ -16,7 +16,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".student.studentBase"></activity>
+        <service
+            android:name=".tutor.DeleteRoomOnQuit"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false"></service>
+
+        <activity android:name=".student.studentBase" />
         <activity android:name=".tutor.tutorRoomPage" />
         <activity android:name=".tutor.tutorWelcome" />
         <activity android:name=".student.studentWelcome" />
