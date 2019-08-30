@@ -18,7 +18,7 @@ import com.schoolofai.objectclassificationgame.tutor.tutorWelcome;
 
 public class login extends AppCompatActivity implements View.OnClickListener {
     private Button btnStudent, btnTutor;
-    private String m_Text = "",code="123";
+    private String m_Text = "",code="111111";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
                 final EditText input = new EditText(this);
 
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_VARIATION_PASSWORD);
                 builder.setView(input);
                 builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
                     @Override

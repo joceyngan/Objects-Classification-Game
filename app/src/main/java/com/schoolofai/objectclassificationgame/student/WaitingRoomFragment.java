@@ -66,6 +66,7 @@ public class WaitingRoomFragment extends Fragment implements IOnBackPressed {
 
     private Timer timer;
     private String TAG = "WaitingRoomFragment";
+    private boolean firstIn = true;
 
     public WaitingRoomFragment() {
         // Required empty public constructor
@@ -136,24 +137,29 @@ public class WaitingRoomFragment extends Fragment implements IOnBackPressed {
                         idx = 0;
                         boolean kicked = false;
                         Log.w(TAG, "PlayerList size: " + playerList.size());
-                        if (playerList.size() == 0){
-                            kicked = true;
-                        }
-                        for (Player checkPlayer : playerList) {
-                            Log.w(TAG, "Check Play: " + checkPlayer.getPlayerUid());
-                            Log.w(TAG, "Current Play: " + player.getPlayerUid() + "");
-                            if (checkPlayer.getPlayerUid().equals(player.getPlayerUid())) {
-                                kicked = false;
-                                break;
+                        Log.w(TAG, "Size 0: " + firstIn);
+                        if (firstIn) {
+                            firstIn = false;
+                        } else {
+                            if (playerList.size() == 0) {
+                                kicked = true;
                             }
-                            idx++;
-                            kicked = true;
-                        }
-                        Log.w(TAG, "PlayerList size: " + kicked);
-                        if (kicked){
-                            listenerChange.remove();
-                            Toast.makeText(getContext(), "You are kicked by tutor" , Toast.LENGTH_LONG).show();
-                            getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(), "RoomListFragment").commit();
+                            for (Player checkPlayer : playerList) {
+                                Log.w(TAG, "Check Play: " + checkPlayer.getPlayerUid());
+                                Log.w(TAG, "Current Play: " + player.getPlayerUid() + "");
+                                if (checkPlayer.getPlayerUid().equals(player.getPlayerUid())) {
+                                    kicked = false;
+                                    break;
+                                }
+                                idx++;
+                                kicked = true;
+                            }
+                            Log.w(TAG, "PlayerList Kick " + kicked);
+                            if (kicked) {
+                                listenerChange.remove();
+                                Toast.makeText(getContext(), "You are kicked by tutor", Toast.LENGTH_LONG).show();
+                                getFragmentManager().beginTransaction().replace(R.id.studentFragmentLayout, new RoomListFragment(), "RoomListFragment").commit();
+                            }
                         }
 
                         if (currentroom.getStatus() == 1) {

@@ -62,7 +62,7 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
         btnKick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayAlertDialog();
+                displayAlertDialog(position);
             }
         });
 
@@ -89,7 +89,8 @@ public class TeamListAdapter extends ArrayAdapter<Player> {
         this.room = room;
     }
 
-    private void displayAlertDialog() {
+    private void displayAlertDialog(int position) {
+        player = playerList.get(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Are you sure to kick " + player.getPlayerName() + "?\n");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {

@@ -434,7 +434,7 @@ public abstract class CameraActivity extends AppCompatActivity
             SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
             Date resultdate = new Date(spentTime);
             finishTime = sdf.format(resultdate);
-            Log.e("Finish Time", finishTime);
+            //Log.e("Finish Time", finishTime);
             if (!isFinished) {
                 time.setText(sdf.format(resultdate));
             }
@@ -857,6 +857,7 @@ public abstract class CameraActivity extends AppCompatActivity
         items.get(location).setStatus(true);
         completed += 1;
         player.setCompletedItem(completed);
+        String savedtime = finishTime;
         if (roomNumber != null) {
             documentReference = db.collection("rooms").document(roomNumber);
             db.runTransaction(new Transaction.Function<Void>() {
@@ -866,9 +867,11 @@ public abstract class CameraActivity extends AppCompatActivity
                     DocumentSnapshot documentSnapshot = transaction.get(documentReference);
                     Room room = documentSnapshot.toObject(Room.class);
                     Log.e("UID", player.getPlayerUid());
+                    Log.e("completed", completed +"");
                     room.UpdateCompleted(player.getPlayerUid(), completed);
                     if (completed == 10) {
-                        room.UpdateCompleteTime(player.getPlayerUid(), finishTime);
+                        Log.e("completed in if", completed +"" + savedtime);
+                        room.UpdateCompleteTime(player.getPlayerUid(), savedtime);
                         room.UpdateStatus(player.getPlayerUid(), 2);
                     }
                     transaction.set(documentReference, room);
@@ -884,7 +887,7 @@ public abstract class CameraActivity extends AppCompatActivity
             timer.cancel();
             new AlertDialog.Builder(this)
                     .setTitle("Congratulation!")
-                    .setMessage("You have completed the game in " + finishTime)
+                    .setMessage("You have completed the game in " + savedtime)
                     .setCancelable(false)
                     .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

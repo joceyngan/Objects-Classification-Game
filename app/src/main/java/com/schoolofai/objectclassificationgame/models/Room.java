@@ -74,9 +74,10 @@ public class Room {
     }
 
     public void UpdateCompleteTime(String playerUid, String finishTime) {
-        Player playertmp = players.get(Integer.parseInt(playerUid));
+        int idx = findIndexByUid(playerUid);
+        Player playertmp = players.get(idx);
         playertmp.setCompletedTime(finishTime);
-        players.set(Integer.parseInt(playerUid), playertmp);
+        players.set(idx, playertmp);
 
     }
     private int findIndexByUid(String uid){
